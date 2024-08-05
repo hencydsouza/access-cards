@@ -11,7 +11,8 @@ import { morgan } from './modules/logger';
 import { jwtStrategy } from './modules/auth';
 import { authLimiter } from './modules/utils';
 import { ApiError, errorConverter, errorHandler } from './modules/errors';
-import routes from './routes/v1';
+import routesV1 from './routes/v1';
+import routesV2 from './routes/v2'
 
 const app: Express = express();
 
@@ -50,7 +51,8 @@ if (config.env === 'production') {
 }
 
 // v1 api routes
-app.use('/v1', routes);
+app.use('/v1', routesV1);
+app.use('/v2', routesV2);
 
 // send back a 404 error for any unknown api request
 app.use((_req, _res, next) => {

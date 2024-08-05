@@ -18,7 +18,7 @@
   },
   "overrides": [
     {
-      "files":["src/**/*.ts"],
+      "files": ["src/**/*.ts"],
       "extends": ["airbnb-base", "airbnb-typescript/base", "plugin:prettier/recommended"],
       "plugins": ["@typescript-eslint", "prettier"],
       "parser": "@typescript-eslint/parser",
@@ -33,5 +33,8 @@
         "consistent-return": "off"
       }
     }
-  ]
+  ],
+  "error": {
+    "endOfLine": "auto"
+  }
 }
