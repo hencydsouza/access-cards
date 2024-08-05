@@ -11,6 +11,15 @@ const buildingSchema = new mongoose.Schema<IBuildingDoc, IBuildingModel>({
     address: {
         type: String,
         required: true
+    },
+    ownerCompany: {
+        companyName: {
+            type: String
+        },
+        companyId: {
+            type: mongoose.Types.ObjectId,
+            ref: 'Company'
+        }
     }
 })
 
