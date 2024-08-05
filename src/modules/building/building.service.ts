@@ -30,8 +30,8 @@ export const queryBuildings = async (filter: Record<string, any>, options: IOpti
 };
 
 /**
- * Get building by id
- * @param {mongoose.Types.ObjectId} id
+ * Get building by buildingId
+ * @param {mongoose.Types.ObjectId} buildingId
  * @returns {Promise<IBuildingDoc | null>}
  */
 export const getBuildingById = async (buildingId: mongoose.Types.ObjectId): Promise<IBuildingDoc | null> => Building.findById(buildingId);

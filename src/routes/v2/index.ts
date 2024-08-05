@@ -2,6 +2,7 @@ import express, { Router } from 'express';
 import config from '../../config/config';
 import docsRoute from './swagger.route';
 import buildingRoute from './building.route'
+import companyRoute from './company.route'
 
 const router = express.Router();
 
@@ -15,6 +16,10 @@ const defaultIRoute: IRoute[] = [
         path: '/building',
         route: buildingRoute,
     },
+    {
+        path: '/company',
+        route: companyRoute
+    }
 ];
 
 const devIRoute: IRoute[] = [
