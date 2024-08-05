@@ -3,6 +3,7 @@ import config from '../../config/config';
 import docsRoute from './swagger.route';
 import buildingRoute from './building.route'
 import companyRoute from './company.route'
+import accessLevelRoute from './accessLevel.route'
 
 const router = express.Router();
 
@@ -19,6 +20,10 @@ const defaultIRoute: IRoute[] = [
     {
         path: '/company',
         route: companyRoute
+    },
+    {
+        path: '/access-level',
+        route: accessLevelRoute
     }
 ];
 

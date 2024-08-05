@@ -7,9 +7,10 @@ import { ICompanyDoc, NewCreatedCompany, UpdateCompanyBody } from "./company.int
 import { Building } from "../building";
 
 /**
- * Create a Company
- * @param {NewCreatedCompany} companyBody
- * @returns {Promise<ICompanyDoc>}
+ * Create a new company in the system.
+ * @param {NewCreatedCompany} companyBody - The new company data to create.
+ * @returns {Promise<ICompanyDoc>} - The created company document.
+ * @throws {ApiError} - If a company with the same name already exists or the specified building is not found.
  */
 export const createCompany = async (companyBody: NewCreatedCompany): Promise<ICompanyDoc> => {
     if (await Company.findOne({ name: companyBody.name })) {
@@ -21,21 +22,12 @@ export const createCompany = async (companyBody: NewCreatedCompany): Promise<ICo
         throw new ApiError(httpStatus.NOT_FOUND, 'Building not found')
     }
 
-    // if (companyBody.buildingsOwned) {
-    //     for (let building of companyBody.buildingsOwned) {
-    //         const tempBuilding = await Building.findOne({ name: building.buildingName })
-    //         if (!tempBuilding)
-    //             throw new ApiError(httpStatus.NOT_FOUND, 'Owned building not found')
-    //     }
-    // }
-
     const company = {
         name: companyBody.name,
         buildings: {
             buildingName: targetBuilding.name,
             buildingId: targetBuilding._id
         },
-        // buildingsOwned: companyBody.buildingsOwned
     }
 
     return Company.create(company);

@@ -4,6 +4,7 @@ import Building from "./building.model";
 import { ApiError } from "../errors";
 import { IOptions, QueryResult } from '../paginate/paginate';
 import { IBuildingDoc, NewCreatedBuilding, UpdateBuildingBody } from "./building.interfaces";
+import { Company } from "../company";
 
 /**
  * Create a building
@@ -15,7 +16,15 @@ export const createBuilding = async (buildingBody: NewCreatedBuilding): Promise<
         throw new ApiError(httpStatus.BAD_REQUEST, 'Building already exists');
     }
 
-    return Building.create(buildingBody);
+    if (buildingBody.ownerCompanyName) {
+        const ownerCompany = await Company.findOne({ name: buildingBody.ownerCompanyName });
+        if (!ownerCompany) {
+            throw new ApiError(httpStatus.BAD_REQUEST, 'Owner company not found');
+        }
+        buildingBody.ownerCompany = ownerCompany._id;
+    }
+
+    return Building.create({ name: buildingBody.name, address: buildingBody.address, ownerCompany: buildingBody.ownerCompany });
 };
 
 /**
@@ -55,6 +64,14 @@ export const updateBuildingById = async (
         throw new ApiError(httpStatus.BAD_REQUEST, 'Name already taken');
     }
 
+    if (updateBody.ownerCompanyName) {
+        const ownerCompany = await Company.findOne({ name: updateBody.ownerCompanyName });
+        if (!ownerCompany) {
+            throw new ApiError(httpStatus.BAD_REQUEST, 'Owner company not found');
+        }
+        updateBody.ownerCompany = ownerCompany._id;
+    }
+
     Object.assign(building, updateBody);
     await building.save();
     return building;
@@ -70,6 +87,12 @@ export const deleteBuildingById = async (buildingId: mongoose.Types.ObjectId): P
     if (!building) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Building not found');
     }
+
+    const companyWithBuilding = await Company.findOne({ 'buildings.buildingId': new mongoose.Types.ObjectId(buildingId) });
+    if (companyWithBuilding) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Building is being used in a company');
+    }
+
     await building.deleteOne();
     return building;
 };

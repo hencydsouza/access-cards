@@ -5,7 +5,9 @@ import { objectId } from '../validate/custom.validation';
 
 const createBuildingBody: Record<keyof NewCreatedBuilding, any> = {
     name: Joi.string().required(),
-    address: Joi.string().required()
+    address: Joi.string().required(),
+    ownerCompany: Joi.string().optional(),
+    ownerCompanyName: Joi.string().optional()
 }
 
 export const createBuilding = {
@@ -33,6 +35,7 @@ export const updateBuilding = {
         .keys({
             name: Joi.string(),
             address: Joi.string(),
+            ownerCompanyName: Joi.string()
         })
         .min(1),
 };
