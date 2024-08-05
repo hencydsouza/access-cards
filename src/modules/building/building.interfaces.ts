@@ -3,11 +3,7 @@ import { QueryResult } from '../paginate/paginate';
 
 export interface IBuilding {
     name: string,
-    address: string,
-    ownerCompany: {
-        companyName: string,
-        companyId: mongoose.Types.ObjectId
-    }
+    address: string
 }
 
 export interface IBuildingDoc extends IBuilding, Document { }
@@ -17,10 +13,6 @@ export interface IBuildingModel extends Model<IBuildingDoc> {
     paginate(filter: Record<string, any>, options: Record<string, any>): Promise<QueryResult>;
 }
 
-export type NewCreatedBuilding = {
-    name: string,
-    address: string,
-    ownerCompanyName: string
-}
+export type NewCreatedBuilding = IBuilding
 
-export type UpdateBuildingBody = Partial<NewCreatedBuilding>
+export type UpdateBuildingBody = Partial<IBuilding>
