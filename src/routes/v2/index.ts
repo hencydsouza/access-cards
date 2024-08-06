@@ -4,6 +4,7 @@ import docsRoute from './swagger.route';
 import buildingRoute from './building.route'
 import companyRoute from './company.route'
 import accessLevelRoute from './accessLevel.route'
+import employeeRoute from './employee.route'
 
 const router = express.Router();
 
@@ -24,6 +25,10 @@ const defaultIRoute: IRoute[] = [
     {
         path: '/access-level',
         route: accessLevelRoute
+    },
+    {
+        path: '/employee',
+        route: employeeRoute,
     }
 ];
 
