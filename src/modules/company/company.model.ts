@@ -19,18 +19,18 @@ const companySchema = new mongoose.Schema<ICompanyDoc, ICompanyModel>({
             ref: 'Building'
         }
     },
-    // buildingsOwned: [
-    //     {
-    //         buildingName: {
-    //             type: String,
-    //         },
-    //         buildingId: {
-    //             type: mongoose.Types.ObjectId,
-    //             ref: 'Building',
-    //         }
-    //     }
-    // ]
-})
+    ownedBuildings: [
+        {
+            buildingName: {
+                type: String,
+            },
+            buildingId: {
+                type: mongoose.Types.ObjectId,
+                ref: 'Building',
+            }
+        }
+    ]
+}, { timestamps: true })
 
 companySchema.plugin(toJSON);
 companySchema.plugin(paginate);

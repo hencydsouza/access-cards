@@ -16,15 +16,15 @@ export const createBuilding = async (buildingBody: NewCreatedBuilding): Promise<
         throw new ApiError(httpStatus.BAD_REQUEST, 'Building already exists');
     }
 
-    if (buildingBody.ownerCompanyName) {
-        const ownerCompany = await Company.findOne({ name: buildingBody.ownerCompanyName });
-        if (!ownerCompany) {
-            throw new ApiError(httpStatus.BAD_REQUEST, 'Owner company not found');
-        }
-        buildingBody.ownerCompany = ownerCompany._id;
-    }
+    // if (buildingBody.ownerCompanyName) {
+    //     const ownerCompany = await Company.findOne({ name: buildingBody.ownerCompanyName });
+    //     if (!ownerCompany) {
+    //         throw new ApiError(httpStatus.BAD_REQUEST, 'Owner company not found');
+    //     }
+    //     buildingBody.ownerCompany = ownerCompany._id;
+    // }
 
-    return Building.create({ name: buildingBody.name, address: buildingBody.address, ownerCompany: buildingBody.ownerCompany });
+    return Building.create({ name: buildingBody.name, address: buildingBody.address });
 };
 
 /**
@@ -64,13 +64,13 @@ export const updateBuildingById = async (
         throw new ApiError(httpStatus.BAD_REQUEST, 'Name already taken');
     }
 
-    if (updateBody.ownerCompanyName) {
-        const ownerCompany = await Company.findOne({ name: updateBody.ownerCompanyName });
-        if (!ownerCompany) {
-            throw new ApiError(httpStatus.BAD_REQUEST, 'Owner company not found');
-        }
-        updateBody.ownerCompany = ownerCompany._id;
-    }
+    // if (updateBody.ownerCompanyName) {
+    //     const ownerCompany = await Company.findOne({ name: updateBody.ownerCompanyName });
+    //     if (!ownerCompany) {
+    //         throw new ApiError(httpStatus.BAD_REQUEST, 'Owner company not found');
+    //     }
+    //     updateBody.ownerCompany = ownerCompany._id;
+    // }
 
     Object.assign(building, updateBody);
     await building.save();

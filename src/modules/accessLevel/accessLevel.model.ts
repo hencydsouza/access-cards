@@ -30,7 +30,7 @@ const accessLevelSchema = new mongoose.Schema<IAccessLevelDoc, IAccessLevelModel
         }],
         required: true
     }
-})
+},{timestamps: true})
 
 accessLevelSchema.plugin(toJSON);
 accessLevelSchema.plugin(paginate);

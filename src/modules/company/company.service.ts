@@ -5,6 +5,7 @@ import { ApiError } from "../errors";
 import { IOptions, QueryResult } from '../paginate/paginate';
 import { ICompanyDoc, NewCreatedCompany, UpdateCompanyBody } from "./company.interfaces";
 import { Building } from "../building";
+import { Employee } from "../employee";
 
 /**
  * Create a new company in the system.
@@ -22,12 +23,23 @@ export const createCompany = async (companyBody: NewCreatedCompany): Promise<ICo
         throw new ApiError(httpStatus.NOT_FOUND, 'Building not found')
     }
 
+    if (companyBody.ownedBuildings) {
+        await Promise.all(companyBody.ownedBuildings.map(async (buildingObj) => {
+            const building = await Building.findOne({ name: buildingObj.buildingName })
+            if (!building) {
+                throw new ApiError(httpStatus.NOT_FOUND, 'Building not found')
+            }
+            buildingObj.buildingId = building._id
+        }))
+    }
+
     const company = {
         name: companyBody.name,
         buildings: {
             buildingName: targetBuilding.name,
             buildingId: targetBuilding._id
         },
+        ownedBuildings: companyBody.ownedBuildings
     }
 
     return Company.create(company);
@@ -80,6 +92,16 @@ export const updateCompanyById = async (
         Object.assign(updateBody, { buildings: { buildingName: targetBuilding.name, buildingId: targetBuilding._id } })
     }
 
+    if (updateBody.ownedBuildings) {
+        await Promise.all(updateBody.ownedBuildings.map(async (buildingObj) => {
+            const building = await Building.findOne({ name: buildingObj.buildingName })
+            if (!building) {
+                throw new ApiError(httpStatus.NOT_FOUND, 'Building not found')
+            }
+            buildingObj.buildingId = building._id
+        }))
+    }
+
     Object.assign(company, updateBody);
     await company.save();
     return company;
@@ -95,6 +117,28 @@ export const deleteCompanyById = async (companyId: mongoose.Types.ObjectId): Pro
     if (!company) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Company not found');
     }
+
+    // if (company.ownedBuildings && company.ownedBuildings.length > 0) {
+    //     throw new ApiError(httpStatus.BAD_REQUEST, 'Company cannot be deleted as it owns buildings')
+    // }
+
+    // TODO: Remove company reference from all employees associated with the company
+
+    const employees = await Employee.find({ "company.companyId": companyId });
+    if (employees.length > 0) {
+        await Employee.updateMany(
+            { "company.companyId": companyId },
+            {
+                $unset: {
+                    'company.companyId': 1,
+                    'company.buildingId': 1
+                }
+            }
+        );
+    }
+
+    // TODO: Delete all access cards associated with the company    
+
     await company.deleteOne();
     return company;
 };

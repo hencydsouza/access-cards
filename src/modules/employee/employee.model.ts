@@ -31,7 +31,7 @@ const employeeSchema = new mongoose.Schema<IEmployeeDoc, IEmployeeModel>({
         },
     }],
 
-})
+}, { timestamps: true })
 
 employeeSchema.plugin(toJSON);
 employeeSchema.plugin(paginate);

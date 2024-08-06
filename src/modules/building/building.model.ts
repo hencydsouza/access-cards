@@ -12,11 +12,11 @@ const buildingSchema = new mongoose.Schema<IBuildingDoc, IBuildingModel>({
         type: String,
         required: true
     },
-    ownerCompany: {
-        type: mongoose.Types.ObjectId,
-        required: false
-    }
-})
+    // ownerCompany: {
+    //     type: mongoose.Types.ObjectId,
+    //     required: false
+    // }
+}, { timestamps: true })
 
 buildingSchema.plugin(toJSON);
 buildingSchema.plugin(paginate);

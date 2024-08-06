@@ -7,7 +7,10 @@ export interface ICompany {
         buildingId: mongoose.Types.ObjectId,
         buildingName: string
     },
-    // buildingsOwned?: { buildingId: mongoose.Types.ObjectId }[]
+    ownedBuildings?: {
+        buildingId: mongoose.Types.ObjectId
+        buildingName: string
+    }[]
 }
 
 export interface ICompanyDoc extends ICompany, Document { }
@@ -20,11 +23,17 @@ export interface ICompanyModel extends Model<ICompanyDoc> {
 export type NewCreatedCompany = {
     name: string,
     buildingName: string,
-    // buildingsOwned?: { buildingName: string }[]
+    ownedBuildings?: {
+        buildingName: string,
+        buildingId?: mongoose.Types.ObjectId
+    }[]
 }
 
 export type UpdateCompanyBody = Partial<{
     name: string,
     buildingName: string,
-    buildingsOwned?: { buildingName: string }[]
+    ownedBuildings?: {
+        buildingName: string
+        buildingId?: mongoose.Types.ObjectId
+    }[]
 }>

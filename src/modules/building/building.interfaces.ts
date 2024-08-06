@@ -4,7 +4,7 @@ import { QueryResult } from '../paginate/paginate';
 export interface IBuilding {
     name: string,
     address: string,
-    ownerCompany?: mongoose.Types.ObjectId
+    // ownerCompany?: mongoose.Types.ObjectId
 }
 
 export interface IBuildingDoc extends IBuilding, Document { }
@@ -17,8 +17,8 @@ export interface IBuildingModel extends Model<IBuildingDoc> {
 export type NewCreatedBuilding = {
     name: string,
     address: string,
-    ownerCompanyName?: string,
-    ownerCompany?: mongoose.Types.ObjectId
+    // ownerCompanyName?: string,
+    // ownerCompany?: mongoose.Types.ObjectId
 }
 
 export type UpdateBuildingBody = Partial<NewCreatedBuilding>

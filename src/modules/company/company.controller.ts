@@ -39,6 +39,6 @@ export const updateCompany = catchAsync(async (req: Request, res: Response) => {
 export const deleteCompany = catchAsync(async (req: Request, res: Response) => {
     if (typeof req.params['companyId'] === 'string') {
         await companyService.deleteCompanyById(new mongoose.Types.ObjectId(req.params['companyId']));
-        res.status(httpStatus.NO_CONTENT).send();
+        res.status(httpStatus.OK).send({ message: "Company and it's reference from employees removed" });
     }
 });
