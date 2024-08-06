@@ -3,11 +3,9 @@ import { NewCreatedAccessLog } from './accessLog.interfaces';
 import { objectId } from '../validate/custom.validation';
 
 const createAccessLogBody: Record<keyof NewCreatedAccessLog, any> = {
-    cardHolder: Joi.object({
-        accessCardId: Joi.string().custom(objectId).required(),
-        companyId: Joi.string().custom(objectId).required(),
-        buildingId: Joi.string().custom(objectId).required()
-    }),
+    accessCardId: Joi.string().custom(objectId).required(),
+    companyId: Joi.string().custom(objectId).required(), 
+    buildingId: Joi.string().custom(objectId).required(),
     accessType: Joi.string().required().valid('login', 'logout', 'access'),
     timestamp: Joi.date().optional()
 }
@@ -28,20 +26,20 @@ export const getAccessLog = {
     }),
 };
 
-export const updateAccessLog = {
-    params: Joi.object().keys({
-        accessLogId: Joi.required().custom(objectId),
-    }),
-    body: Joi.object()
-        .keys({
-            accessCardId: Joi.string().custom(objectId),
-            companyId: Joi.string().custom(objectId),
-            buildingId: Joi.string().custom(objectId),
-            accessType: Joi.string(),
-            timestamp: Joi.date(),
-        })
-        .min(1),
-};
+// export const updateAccessLog = {
+//     params: Joi.object().keys({
+//         accessLogId: Joi.required().custom(objectId),
+//     }),
+//     body: Joi.object()
+//         .keys({
+//             accessCardId: Joi.string().custom(objectId),
+//             companyId: Joi.string().custom(objectId),
+//             buildingId: Joi.string().custom(objectId),
+//             accessType: Joi.string(),
+//             timestamp: Joi.date(),
+//         })
+//         .min(1),
+// };
 
 export const deleteAccessLog = {
     params: Joi.object().keys({

@@ -10,7 +10,7 @@ router.route('/')
 
 router.route('/:accessLogId')
     .get(validate(accessLogValidation.getAccessLog), accessLogController.getAccessLog)
-    .patch(validate(accessLogValidation.updateAccessLog), accessLogController.updateAccessLog)
     .delete(validate(accessLogValidation.deleteAccessLog), accessLogController.deleteAccessLog)
+    // .patch(validate(accessLogValidation.updateAccessLog), accessLogController.updateAccessLog)
 
 export default router

@@ -29,12 +29,12 @@ export const getAccessLog = catchAsync(async (req: Request, res: Response) => {
     }
 });
 
-export const updateAccessLog = catchAsync(async (req: Request, res: Response) => {
-    if (typeof req.params['accessLogId'] === 'string') {
-        const accessLog = await accessLogService.updateAccessLogById(new mongoose.Types.ObjectId(req.params['accessLogId']), req.body);
-        res.send(accessLog);
-    }
-});
+// export const updateAccessLog = catchAsync(async (req: Request, res: Response) => {
+//     if (typeof req.params['accessLogId'] === 'string') {
+//         const accessLog = await accessLogService.updateAccessLogById(new mongoose.Types.ObjectId(req.params['accessLogId']), req.body);
+//         res.send(accessLog);
+//     }
+// });
 
 export const deleteAccessLog = catchAsync(async (req: Request, res: Response) => {
     if (typeof req.params['accessLogId'] === 'string') {

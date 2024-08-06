@@ -3,38 +3,45 @@ import toJSON from '../toJSON/toJSON';
 import paginate from '../paginate/paginate';
 import { IAccessLogDoc, IAccessLogModel } from "./accessLog.interfaces";
 
-const accessLogSchema = new mongoose.Schema<IAccessLogDoc, IAccessLogModel>({
-    cardHolder: {
+const accessLogSchema = new mongoose.Schema<IAccessLogDoc,IAccessLogModel>({
+    bucketDate: {
+        type: Date,
+        required: true,
+        index: true
+    },
+    companyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Company',
+        required: true,
+        index: true
+    },
+    logs: [{
         accessCardId: {
-            type: mongoose.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'AccessCard',
             required: true,
-            ref: 'AccessCard'
         },
         employeeId: {
-            type: mongoose.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Employee',
             required: true,
-            ref: 'Employee'
-        },
-        companyId: {
-            type: mongoose.Types.ObjectId,
-            required: true,
-            ref: 'Company'
         },
         buildingId: {
-            type: mongoose.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Building',
             required: true,
-            ref: 'Building'
+            index: true
         },
-    },
-    accessType: {
-        type: String,
-        required: true,
-        enum: ['login', 'logout', 'access']
-    },
-    timestamp: {
-        type: Date,
-        default: Date.now
-    }
+        accessType: {
+            type: String,
+            enum: ['login', 'logout', 'access'],
+            required: true,
+        },
+        timestamp: {
+            type: Date,
+            required: true,
+        },
+    }]
 }, { timestamps: true })
 
 accessLogSchema.plugin(toJSON);
