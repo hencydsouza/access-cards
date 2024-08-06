@@ -5,6 +5,7 @@ import buildingRoute from './building.route'
 import companyRoute from './company.route'
 import accessLevelRoute from './accessLevel.route'
 import employeeRoute from './employee.route'
+import accessCardRoute from './accessCard.route'
 
 const router = express.Router();
 
@@ -29,6 +30,10 @@ const defaultIRoute: IRoute[] = [
     {
         path: '/employee',
         route: employeeRoute,
+    },
+    {
+        path: '/access-card',
+        route: accessCardRoute,
     }
 ];
 
