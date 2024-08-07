@@ -3,15 +3,9 @@ import toJSON from '../toJSON/toJSON';
 import paginate from '../paginate/paginate';
 import { IAccessLogDoc, IAccessLogModel } from "./accessLog.interfaces";
 
-const accessLogSchema = new mongoose.Schema<IAccessLogDoc,IAccessLogModel>({
+const accessLogSchema = new mongoose.Schema<IAccessLogDoc, IAccessLogModel>({
     bucketDate: {
         type: Date,
-        required: true,
-        index: true
-    },
-    companyId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Company',
         required: true,
         index: true
     },
@@ -25,6 +19,12 @@ const accessLogSchema = new mongoose.Schema<IAccessLogDoc,IAccessLogModel>({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Employee',
             required: true,
+        },
+        companyId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Company',
+            required: true,
+            index: true
         },
         buildingId: {
             type: mongoose.Schema.Types.ObjectId,

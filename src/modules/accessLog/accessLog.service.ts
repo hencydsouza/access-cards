@@ -8,7 +8,7 @@ import { AccessCard } from "../accessCard";
 import { Company } from "../company";
 import { Building } from "../building";
 
-export const createAccessLog = async (accessLogBody: NewCreatedAccessLog): Promise<IAccessLogDoc> => {
+export const createAccessLog = async (accessLogBody: NewCreatedAccessLog): Promise<IAccessLogDoc | null> => {
     // implement validation
     const [accessCard, company, building] = await Promise.all([
         AccessCard.findById(accessLogBody.accessCardId),
@@ -29,22 +29,22 @@ export const createAccessLog = async (accessLogBody: NewCreatedAccessLog): Promi
     let date = accessLogBody.timestamp || new Date()
 
     const logBucket = await AccessLog.findOne({ bucketDate: date.toISOString().split('T')[0] + 'T00:00:00.000Z' })
-    if (logBucket && logBucket.companyId === accessLogBody.companyId) {
+    if (logBucket) {
         const log = {
             accessCardId: accessLogBody.accessCardId,
             employeeId: accessCard.cardHolder.employeeId,
             accessType: accessLogBody.accessType,
             timestamp: accessLogBody.timestamp || date
         }
-        await logBucket.updateOne({ $push: { logs: log } }, { new: true })
-        return logBucket
+        await logBucket.updateOne({ $push: { logs: log } })
+        return AccessLog.findById(logBucket._id)
     } else {
         const newLogBucket = await AccessLog.create({
             bucketDate: date.toISOString().split('T')[0],
-            companyId: accessLogBody.companyId,
             logs: [{
                 accessCardId: accessLogBody.accessCardId,
                 employeeId: accessCard.cardHolder.employeeId,
+                companyId: accessLogBody.companyId,
                 buildingId: accessLogBody.buildingId,
                 accessType: accessLogBody.accessType,
                 timestamp: accessLogBody.timestamp || Date.now()
