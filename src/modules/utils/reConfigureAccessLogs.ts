@@ -7,7 +7,7 @@ export async function reConfigureAccessLogs(interval: number) {
         { $unwind: "$logs" },
         { $replaceRoot: { newRoot: "$logs" } },
         { $sort: { "logs.timestamp": 1 } },
-        { $unset: "_id" }
+        // { $unset: "_id" }
     ]);
 
     // log type
