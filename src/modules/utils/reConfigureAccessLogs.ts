@@ -27,59 +27,31 @@ export async function reConfigureAccessLogs(interval: number) {
     const newLogs: Log[] = []
 
     accessLogs.forEach(log => {
-        // if no logs in newLogs, create a new log bucket
-        if (!newLogs.length) {
+        const currentBucket = newLogs[newLogs.length - 1];
+        const newLogEntry = {
+            accessCardId: log.accessCardId.toString(),
+            employeeId: log.employeeId.toString(),
+            buildingId: log.buildingId.toString(),
+            companyId: log.companyId.toString(),
+            accessType: log.accessType,
+            timestamp: log.timestamp
+        };
+
+        if (!currentBucket || log.timestamp >= currentBucket.bucketEndTime) {
             newLogs.push({
                 bucketStartTime: log.timestamp,
                 bucketEndTime: new Date(log.timestamp.getTime() + interval * 1000),
-                logs: [
-                    {
-                        accessCardId: log.accessCardId.toString(),
-                        employeeId: log.employeeId.toString(),
-                        buildingId: log.buildingId.toString(),
-                        companyId: log.companyId.toString(),
-                        accessType: log.accessType.toString(),
-                        timestamp: log.timestamp
-                    }
-                ]
-            })
+                logs: [newLogEntry]
+            });
+        } else {
+            currentBucket.logs.push(newLogEntry);
         }
-        // check if the log is within the last log's bucket
-        else if (newLogs[newLogs.length - 1] && log.timestamp < newLogs[newLogs.length - 1]!.bucketEndTime) {
-            newLogs[newLogs.length - 1]!.logs.push(
-                {
-                    accessCardId: log.accessCardId.toString(),
-                    employeeId: log.employeeId.toString(),
-                    buildingId: log.buildingId.toString(),
-                    companyId: log.companyId.toString(),
-                    accessType: log.accessType.toString(),
-                    timestamp: log.timestamp
-                }
-            )
-        } 
-        // create new log bucket
-        else {
-            newLogs.push({
-                bucketStartTime: log.timestamp,
-                bucketEndTime: new Date(log.timestamp.getTime() + interval * 1000),
-                logs: [
-                    {
-                        accessCardId: log.accessCardId.toString(),
-                        employeeId: log.employeeId.toString(),
-                        buildingId: log.buildingId.toString(),
-                        companyId: log.companyId.toString(),
-                        accessType: log.accessType.toString(),
-                        timestamp: log.timestamp
-                    }
-                ]
-            })
-        }
-    })
+    });
 
     // delete old access logs
     await AccessLog.deleteMany({})
     // insert new logs
     await AccessLog.insertMany(newLogs)
 
-    logger.info("Access logs re-configured with interval: " + (interval/3600) + " hours")
+    logger.info("Access logs re-configured with interval: " + (interval / 3600) + " hours")
 }
