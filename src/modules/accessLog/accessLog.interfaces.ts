@@ -2,7 +2,8 @@ import mongoose, { Document, Model } from "mongoose";
 import { QueryResult } from '../paginate/paginate';
 
 export interface IAccessLog {
-    bucketDate: Date;
+    bucketStartTime: Date;
+    bucketEndTime: Date;
     logs: {
         accessCardId: mongoose.Types.ObjectId;
         employeeId: mongoose.Types.ObjectId;

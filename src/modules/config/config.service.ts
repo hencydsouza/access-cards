@@ -4,6 +4,7 @@ import Config from "./config.model";
 import { ApiError } from "../errors";
 import { IOptions, QueryResult } from '../paginate/paginate';
 import { IConfigDoc, NewCreatedConfig, UpdateConfigBody } from "./config.interfaces";
+import { reConfigureAccessLogs } from "../utils/reConfigureAccessLogs";
 
 export const createConfig = async (configBody: NewCreatedConfig): Promise<IConfigDoc> => {
     if (await Config.findOne({ key: configBody.key })) {
@@ -34,10 +35,16 @@ export const updateConfigById = async (
         throw new ApiError(httpStatus.BAD_REQUEST, 'Key already taken');
     }
 
+    if (config.key == 'accessLogInterval' && updateBody.value) {
+        reConfigureAccessLogs(updateBody.value || 21600)
+    }
+
     Object.assign(config, updateBody);
     await config.save();
     return config;
 }
+
+
 
 export const deleteConfigById = async (configId: mongoose.Types.ObjectId): Promise<IConfigDoc | null> => {
     const config = await getConfigById(configId);

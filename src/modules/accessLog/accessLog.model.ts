@@ -4,7 +4,12 @@ import paginate from '../paginate/paginate';
 import { IAccessLogDoc, IAccessLogModel } from "./accessLog.interfaces";
 
 const accessLogSchema = new mongoose.Schema<IAccessLogDoc, IAccessLogModel>({
-    bucketDate: {
+    bucketStartTime: {
+        type: Date,
+        required: true,
+        index: true
+    },
+    bucketEndTime: {
         type: Date,
         required: true,
         index: true

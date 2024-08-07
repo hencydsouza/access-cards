@@ -7,6 +7,7 @@ import { IAccessLogDoc, NewCreatedAccessLog } from "./accessLog.interfaces";
 import { AccessCard } from "../accessCard";
 import { Company } from "../company";
 import { Building } from "../building";
+import { Config } from "../config";
 
 export const createAccessLog = async (accessLogBody: NewCreatedAccessLog): Promise<IAccessLogDoc | null> => {
     // implement validation
@@ -26,21 +27,37 @@ export const createAccessLog = async (accessLogBody: NewCreatedAccessLog): Promi
         throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid building');
     }
 
-    let date = accessLogBody.timestamp || new Date()
+    // get last bucket
+    // const lastBucket = await AccessLog.findOne({}, {}, { sort: { updatedAt: -1 } })
+    // logger.info(lastBucket)
 
-    const logBucket = await AccessLog.findOne({ bucketDate: date.toISOString().split('T')[0] + 'T00:00:00.000Z' })
-    if (logBucket) {
+    let logTime = accessLogBody.timestamp || Date.now()
+
+    // check if the logTime falls within the lastAccessLog
+
+
+    // const logBucket = await AccessLog.findOne({ bucketDate: logTime.toISOString().split('T')[0] + 'T00:00:00.000Z' })
+    const lastAccessLog = await AccessLog.findOne({}, {}, { sort: { updatedAt: -1 } })
+
+    if (lastAccessLog?.bucketEndTime && lastAccessLog.bucketEndTime > logTime) {
         const log = {
             accessCardId: accessLogBody.accessCardId,
             employeeId: accessCard.cardHolder.employeeId,
+            companyId: accessLogBody.companyId,
+            buildingId: accessLogBody.buildingId,
             accessType: accessLogBody.accessType,
-            timestamp: accessLogBody.timestamp || date
+            timestamp: accessLogBody.timestamp || logTime
         }
-        await logBucket.updateOne({ $push: { logs: log } })
-        return AccessLog.findById(logBucket._id)
+        await lastAccessLog.updateOne({ $push: { logs: log } })
+        return AccessLog.findById(lastAccessLog._id)
     } else {
+        // get interval from config or default to next 6 hours
+        const interval = await Config.findOne({ key: 'accessLogInterval' })
+        const intervalInSeconds = interval?.value || 21600
+
         const newLogBucket = await AccessLog.create({
-            bucketDate: date.toISOString().split('T')[0],
+            bucketStartTime: logTime,
+            bucketEndTime: new Date(new Date(logTime).getTime() + intervalInSeconds * 1000),
             logs: [{
                 accessCardId: accessLogBody.accessCardId,
                 employeeId: accessCard.cardHolder.employeeId,
@@ -50,6 +67,7 @@ export const createAccessLog = async (accessLogBody: NewCreatedAccessLog): Promi
                 timestamp: accessLogBody.timestamp || Date.now()
             }]
         })
+
         return newLogBucket
     }
 };
