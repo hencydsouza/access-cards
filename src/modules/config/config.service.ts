@@ -4,7 +4,7 @@ import Config from "./config.model";
 import { ApiError } from "../errors";
 import { IOptions, QueryResult } from '../paginate/paginate';
 import { IConfigDoc, NewCreatedConfig, UpdateConfigBody } from "./config.interfaces";
-import { reConfigureAccessLogs } from "../utils/reConfigureAccessLogs";
+import reConfigureAccessLogs  from "../utils/reConfigureAccessLogs";
 
 export const createConfig = async (configBody: NewCreatedConfig): Promise<IConfigDoc> => {
     if (await Config.findOne({ key: configBody.key })) {

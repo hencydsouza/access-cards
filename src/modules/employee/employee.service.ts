@@ -65,6 +65,8 @@ export const updateEmployeeById = async (
         employee.company.buildingId = targetBuilding._id
     }
 
+    // TODO: implement access card, access level logic if changed
+
     Object.assign(employee, updateBody);
     await employee.save();
     return employee;

@@ -98,6 +98,13 @@ export const updateCompanyById = async (
             if (!building) {
                 throw new ApiError(httpStatus.NOT_FOUND, 'Building not found')
             }
+
+            // check if building is already owned by a different company
+            const companyWithBuilding = await Company.findOne({ 'ownedBuildings.buildingId': building._id })
+            if (companyWithBuilding) {
+                throw new ApiError(httpStatus.BAD_REQUEST, 'Building already owned by another company')
+            }
+
             buildingObj.buildingId = building._id
         }))
     }

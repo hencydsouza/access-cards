@@ -8,6 +8,7 @@ import employeeRoute from './employee.route'
 import accessCardRoute from './accessCard.route'
 import accessLogRoute from './accessLog.route'
 import configRoute from './config.route'
+import accessRoute from './access.route'
 
 const router = express.Router();
 
@@ -44,6 +45,10 @@ const defaultIRoute: IRoute[] = [
     {
         path: '/config',
         route: configRoute,
+    },
+    {
+        path: '/access',
+        route: accessRoute,
     }
 ];
 

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { AccessLog } from "../accessLog";
 import { logger } from "../logger";
 
-export async function reConfigureAccessLogs(interval: number) {
+export default async function reConfigureAccessLogs(interval: number) {
     const accessLogs = await AccessLog.aggregate([
         { $unwind: "$logs" },
         { $replaceRoot: { newRoot: "$logs" } },

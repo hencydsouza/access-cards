@@ -34,11 +34,8 @@ export const createAccessLog = async (accessLogBody: NewCreatedAccessLog): Promi
     let logTime = accessLogBody.timestamp || Date.now()
 
     // check if the logTime falls within the lastAccessLog
-
-
-    // const logBucket = await AccessLog.findOne({ bucketDate: logTime.toISOString().split('T')[0] + 'T00:00:00.000Z' })
     const lastAccessLog = await AccessLog.findOne({}, {}, { sort: { updatedAt: -1 } })
-
+    
     if (lastAccessLog?.bucketEndTime && lastAccessLog.bucketEndTime > logTime) {
         const log = {
             accessCardId: accessLogBody.accessCardId,

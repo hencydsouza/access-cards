@@ -4,7 +4,7 @@ import { objectId } from '../validate/custom.validation';
 
 const createAccessLogBody: Record<keyof NewCreatedAccessLog, any> = {
     accessCardId: Joi.string().custom(objectId).required(),
-    companyId: Joi.string().custom(objectId).required(), 
+    companyId: Joi.string().custom(objectId).required(),
     buildingId: Joi.string().custom(objectId).required(),
     accessType: Joi.string().required().valid('login', 'logout', 'access'),
     timestamp: Joi.date().optional()
@@ -16,7 +16,8 @@ export const createAccessLog = {
 
 export const getAccessLogs = {
     query: Joi.object().keys({
-        employeeId: Joi.string()
+        limit: Joi.string(),
+        page: Joi.string(),
     }),
 };
 
