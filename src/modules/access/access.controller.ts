@@ -8,6 +8,6 @@ import catchAsync from '../utils/catchAsync';
 import * as accessService from './access.service'
 
 export const access = catchAsync(async (req: Request, res: Response) => {
-    await accessService.accessService(req.body);
-    res.status(httpStatus.CREATED).json({ message: "Access Granted. Log complete." }).send();
+    const result = await accessService.accessService(req.body);
+    res.status(httpStatus.CREATED).json({ message: result }).send();
 });

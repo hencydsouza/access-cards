@@ -5,9 +5,10 @@ import { ApiError } from "../errors";
 import { IOptions, QueryResult } from '../paginate/paginate';
 import { IAccessCardDoc, NewCreatedAccessCard, UpdateAccessCardBody } from "./accessCard.interfaces";
 import { Employee } from "../employee";
+import { Company } from "../company";
 
 export const createAccessCard = async (accessCardBody: NewCreatedAccessCard): Promise<IAccessCardDoc> => {
-    if (await AccessCard.findOne({ cardNumber: accessCardBody.cardNumber })) {
+    if (accessCardBody.cardNumber && await AccessCard.findOne({ cardNumber: accessCardBody.cardNumber })) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'AccessCard already exists');
     }
 
@@ -26,7 +27,7 @@ export const createAccessCard = async (accessCardBody: NewCreatedAccessCard): Pr
     }
 
     const accessCardObject = {
-        cardNumber: accessCardBody.cardNumber,
+        cardNumber: accessCardBody.cardNumber ? accessCardBody.cardNumber : (await Company.findById(employee.company.companyId))?.name.toUpperCase() + '-' + employee.name.split(' ')[0]?.toUpperCase(),
         cardHolder: {
             employeeId: accessCardBody.cardHolder.employeeId
         },
@@ -89,7 +90,7 @@ export const updateAccessCardById = async (
         if (previousEmployee) {
             await previousEmployee.updateOne({ $unset: { accessCardId: 1 } });
         }
-        
+
         // update card holder in access card document
         accessCard.cardHolder.employeeId = updateBody.cardHolder.employeeId;
     }

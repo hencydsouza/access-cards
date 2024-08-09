@@ -6,6 +6,7 @@ import { IOptions, QueryResult } from '../paginate/paginate';
 import { IEmployeeDoc, NewCreatedEmployee, UpdateEmployeeBody } from "./employee.interfaces";
 import { Building } from "../building";
 import { Company } from "../company";
+import { AccessLevel } from "../accessLevel";
 // import { Building } from "../building";
 
 export const createEmployee = async (employeeBody: NewCreatedEmployee): Promise<IEmployeeDoc> => {
@@ -29,6 +30,15 @@ export const createEmployee = async (employeeBody: NewCreatedEmployee): Promise<
     // }
 
     // TODO: implement access card and access level logic
+
+    if(employeeBody.accessLevels){
+        employeeBody.accessLevels.forEach(async (accessObject) => {
+            const accessLevelExists = await AccessLevel.findOne({ name: accessObject.accessLevel });
+            if (!accessLevelExists) {
+                throw new ApiError(httpStatus.BAD_REQUEST, 'Access level does not exist');
+            }
+        });
+    }
 
     return Employee.create(employeeBody);
 };

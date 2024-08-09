@@ -19,7 +19,7 @@ export interface IAccessCardModel extends Model<IAccessCardDoc> {
 }
 
 export type NewCreatedAccessCard = {
-    cardNumber: string,
+    cardNumber?: string,
     cardHolder: {
         employeeId: mongoose.Types.ObjectId,
     }

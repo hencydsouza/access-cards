@@ -29,7 +29,7 @@ export type NewCreatedEmployee = {
         buildingId: mongoose.Types.ObjectId
     },
     accessCardId?: mongoose.Types.ObjectId,
-    accessLevels?: {
+    accessLevels: {
         accessLevel: string
     }[]
 }

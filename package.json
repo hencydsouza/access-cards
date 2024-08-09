@@ -98,7 +98,6 @@
     "jest": "^27.4.4",
     "lint-staged": "^12.1.2",
     "node-mocks-http": "^1.11.0",
-    "nodemon": "^2.0.20",
     "prettier": "^2.5.1",
     "standard-version": "^9.3.2",
     "supertest": "^6.1.6",

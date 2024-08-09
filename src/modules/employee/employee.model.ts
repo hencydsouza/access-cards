@@ -27,7 +27,6 @@ const employeeSchema = new mongoose.Schema<IEmployeeDoc, IEmployeeModel>({
         accessLevel: {
             type: String,
             required: false,
-            default: 'Company',
         },
     }],
 

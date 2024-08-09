@@ -3,7 +3,7 @@ import { NewCreatedAccessCard } from './accessCard.interfaces';
 import { objectId } from '../validate/custom.validation';
 
 const createAccessCardBody: Record<keyof NewCreatedAccessCard, any> = {
-    cardNumber: Joi.string().required(),
+    cardNumber: Joi.string().optional(),
     cardHolder: Joi.object({
         employeeId: Joi.string().custom(objectId).required()
     }).required(),

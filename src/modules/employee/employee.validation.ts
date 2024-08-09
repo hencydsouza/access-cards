@@ -15,7 +15,7 @@ const createEmployeeBody: Record<keyof NewCreatedEmployee, any> = {
         Joi.object({
             accessLevel: Joi.string().required()
         })
-    ).optional()
+    )
 }
 
 export const createEmployee = {
