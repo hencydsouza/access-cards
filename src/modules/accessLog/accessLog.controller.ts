@@ -6,8 +6,8 @@ import ApiError from '../errors/ApiError';
 import pick from '../utils/pick';
 import { IOptions } from '../paginate/paginate';
 import * as accessLogService from './accessLog.service'
-// import { Config } from '../config';
-// import reConfigureAccessLogs from '../utils/reConfigureAccessLogs';
+import { Config } from '../config';
+import reConfigureAccessLogs from '../utils/reConfigureAccessLogs';
 
 export const createAccessLog = catchAsync(async (req: Request, res: Response) => {
     const accessLog = await accessLogService.createAccessLog(req.body);
@@ -38,21 +38,21 @@ export const deleteAccessLog = catchAsync(async (req: Request, res: Response) =>
     }
 });
 
-// export const reConfigureAccessLogsController = catchAsync(async (req: Request, res: Response) => {
-//     console.log(req.body)
-//     const config = await Config.findOne({ key: "accessLogInterval" })
-//     await reConfigureAccessLogs(Number(config?.value) || 21600);
-//     res.status(httpStatus.OK).json({
-//         message: 'Access Logs Reconfigured to ' + (Number(config?.value) / 3600) + ' hours'
-//     }).send();
-// });
+export const reConfigureAccessLogsController = catchAsync(async (req: Request, res: Response) => {
+    console.log(req.body)
+    const config = await Config.findOne({ key: "accessLogInterval" })
+    await reConfigureAccessLogs(Number(config?.value) || 21600);
+    res.status(httpStatus.OK).json({
+        message: 'Access Logs Reconfigured to ' + (Number(config?.value) / 3600) + ' hours'
+    }).send();
+});
 
-// export const reConfigureAccessLogsByValue = catchAsync(async (req: Request, res: Response) => {
-//     if (typeof req.params["accessLogInterval"] === 'string') {
-//         await Config.updateOne({ key: "accessLogInterval" }, { value: req.params["logInterval"] })
-//         await reConfigureAccessLogs(Number(req.params["accessLogInterval"]));
-//         res.status(httpStatus.OK).json({
-//             message: 'Access Logs Reconfigured to ' + (Number(req.params["logInterval"]) / 3600) + ' hours'
-//         }).send();
-//     }
-// });
+export const reConfigureAccessLogsByValue = catchAsync(async (req: Request, res: Response) => {
+    if (typeof req.params["accessLogInterval"] === 'string') {
+        await Config.updateOne({ key: "accessLogInterval" }, { value: Number.parseInt(req.params["accessLogInterval"] || '21600') })
+        await reConfigureAccessLogs(Number(req.params["accessLogInterval"]));
+        res.status(httpStatus.OK).json({
+            message: 'Access Logs Reconfigured to ' + (Number.parseInt(req.params["accessLogInterval"] || '21600') / 3600) + ' hours'
+        }).send();
+    }
+});
