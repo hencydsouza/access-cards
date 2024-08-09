@@ -35,7 +35,7 @@ export const accessService = async (accessBody: IAccess): Promise<any> => {
             permissions: []
         }
     ]
-    if (accessBody.requiredPermission) {
+    if (accessBody.resource) {
         await Promise.all(employee.accessLevels.map(async (permission) => {
             const permissionExists = await AccessLevel.findOne({ name: permission.accessLevel })
             if (!permissionExists) {
@@ -74,8 +74,8 @@ export const accessService = async (accessBody: IAccess): Promise<any> => {
 
     // employee access his company within the right building
     if (employeeBelongsToBuilding && employeeBelongsToCompany) {
-        if (accessBody.requiredPermission && accessBody.requiredPermission.length > 0) {
-            hasRequiredPermission = accessBody.requiredPermission.every((reqPermission: string) =>
+        if (accessBody.resource && accessBody.resource.length > 0) {
+            hasRequiredPermission = accessBody.resource.every((reqPermission: string) =>
                 permissionArray[0]?.permissions.some((permission: { resource: string; action: string }) =>
                     permission.resource === reqPermission && permission.action === 'access'
                 )
@@ -85,7 +85,6 @@ export const accessService = async (accessBody: IAccess): Promise<any> => {
                 throw new ApiError(httpStatus.FORBIDDEN, 'Employee does not have the required permissions for this resource');
             }
 
-            console.log('company access')
             console.log('Company permissions:', permissionArray[0])
         } else {
             // hasRequiredPermission = true;
@@ -95,9 +94,9 @@ export const accessService = async (accessBody: IAccess): Promise<any> => {
     // building owner access accesses any company while having appropriate permissions
     else if (employeeCompanyOwnsBuilding) {
         // Check if the employee has access to the resource
-        if (accessBody.requiredPermission && accessBody.requiredPermission.length > 0) {
+        if (accessBody.resource && accessBody.resource.length > 0) {
 
-            hasRequiredPermission = accessBody.requiredPermission.every((reqPermission: string) =>
+            hasRequiredPermission = accessBody.resource.every((reqPermission: string) =>
                 permissionArray[1]?.permissions.some((permission: { resource: string; action: string }) =>
                     permission.resource === reqPermission && permission.action === 'access'
                 )
@@ -107,7 +106,6 @@ export const accessService = async (accessBody: IAccess): Promise<any> => {
                 throw new ApiError(httpStatus.FORBIDDEN, 'Employee does not have the required permissions for this resource');
             }
 
-            console.log('building access')
             console.log('building permissions:', permissionArray[1])
         } else {
             // hasRequiredPermission = true;
@@ -139,7 +137,7 @@ export const accessService = async (accessBody: IAccess): Promise<any> => {
         throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Failed to create access log');
     }
 
-    return permissionArray.length > 0 ? `Access to ${accessBody.requiredPermission} granted` : accessCard;
+    return permissionArray.length > 0 ? `Access to ${accessBody.resource} granted` : accessCard;
 };
 
 // Function to check if the employee's company owns the building

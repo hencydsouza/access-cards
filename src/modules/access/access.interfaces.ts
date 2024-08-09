@@ -5,5 +5,5 @@ export interface IAccess {
     companyId: mongoose.Types.ObjectId,
     buildingId: mongoose.Types.ObjectId,
     accessType: string,
-    requiredPermission?: string[],
+    resource?: string[],
 }

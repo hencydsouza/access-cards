@@ -7,7 +7,7 @@ const accessBody: Record<keyof IAccess, any> = {
     companyId: Joi.string().custom(objectId).required(),
     buildingId: Joi.string().custom(objectId).required(),
     accessType: Joi.string().required().valid('login', 'logout', 'access'),
-    requiredPermission: Joi.array().items(Joi.string()).optional(),
+    resource: Joi.array().items(Joi.string()).optional(),
 }
 
 export const Access = {
