@@ -67,12 +67,12 @@ export const accessService = async (accessBody: IAccess): Promise<any> => {
 
     // Check if the employee belongs to the company
     if (!employeeBelongsToCompany && !employeeCompanyOwnsBuilding) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Employee does not have access to this company');
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Employee does not belong to this company');
     }
 
     let hasRequiredPermission = false
 
-    // employee access
+    // employee access his company within the right building
     if (employeeBelongsToBuilding && employeeBelongsToCompany) {
         if (accessBody.resource && accessBody.resource.length > 0) {
             hasRequiredPermission = accessBody.resource.every((reqPermission: string) =>
@@ -85,13 +85,13 @@ export const accessService = async (accessBody: IAccess): Promise<any> => {
                 throw new ApiError(httpStatus.FORBIDDEN, 'Employee does not have the required permissions for this resource');
             }
 
-            // console.log('Company permissions:', permissionArray[0])
+            console.log('Company permissions:', permissionArray[0])
         } else {
             // hasRequiredPermission = true;
             throw new ApiError(httpStatus.BAD_REQUEST, 'Permissions do not match or are missing');
         }
     }
-    // building owner access
+    // building owner access accesses any company while having appropriate permissions
     else if (employeeCompanyOwnsBuilding) {
         // Check if the employee has access to the resource
         if (accessBody.resource && accessBody.resource.length > 0) {
