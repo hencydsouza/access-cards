@@ -36,6 +36,13 @@ export const updateAccessLevel = catchAsync(async (req: Request, res: Response) 
     }
 });
 
+export const addPermissionToAccessLevel = catchAsync(async (req: Request, res: Response) => {
+    if (typeof req.params['accessLevelId'] === 'string') {
+        const accessLevel = await accessLevelService.addPermissionToAccessLevel(new mongoose.Types.ObjectId(req.params['accessLevelId']), req.body);
+        res.send(accessLevel);
+    }
+})
+
 export const deleteAccessLevel = catchAsync(async (req: Request, res: Response) => {
     if (typeof req.params['accessLevelId'] === 'string') {
         await accessLevelService.deleteAccessLevelById(new mongoose.Types.ObjectId(req.params['accessLevelId']));

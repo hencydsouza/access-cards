@@ -20,4 +20,11 @@ export interface IAccessLevelModel extends Model<IAccessLevelDoc> {
 
 export type NewCreatedAccessLevel = IAccessLevel
 
+export type addPermissionInterface = {
+    permissions: {
+        resource: string,
+        action: string
+    }[]
+}
+
 export type UpdateAccessLevelBody = Partial<NewCreatedAccessLevel>

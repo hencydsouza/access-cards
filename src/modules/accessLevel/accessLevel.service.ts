@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import AccessLevel from "./accessLevel.model";
 import { ApiError } from "../errors";
 import { IOptions, QueryResult } from '../paginate/paginate';
-import { IAccessLevelDoc, NewCreatedAccessLevel, UpdateAccessLevelBody } from "./accessLevel.interfaces";
+import { addPermissionInterface, IAccessLevelDoc, NewCreatedAccessLevel, UpdateAccessLevelBody } from "./accessLevel.interfaces";
 
 /**
  * Creates a new access level in the system.
@@ -40,6 +40,8 @@ export const queryAccessLevels = async (filter: Record<string, any>, options: IO
  */
 export const getAccessLevelById = async (accessLevelId: mongoose.Types.ObjectId): Promise<IAccessLevelDoc | null> => AccessLevel.findById(accessLevelId);
 
+export const getAccessLevelByName = async (name: string): Promise<IAccessLevelDoc | null> => AccessLevel.findOne({ name });
+
 export const updateAccessLevelById = async (
     accessLevelId: mongoose.Types.ObjectId,
     updateBody: UpdateAccessLevelBody
@@ -50,6 +52,27 @@ export const updateAccessLevelById = async (
     }
 
     Object.assign(accessLevel, updateBody);
+    await accessLevel.save();
+    return accessLevel;
+}
+
+export const addPermissionToAccessLevel = async (
+    accessLevelId: mongoose.Types.ObjectId,
+    permissionsBody: addPermissionInterface
+): Promise<IAccessLevelDoc | null> => {
+    const accessLevel = await getAccessLevelById(accessLevelId);
+    if (!accessLevel) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'AccessLevel not found');
+    }
+
+    // permissionsBody.permissions.forEach(permission => {
+    //     let permissionAlreadyExists = accessLevel.permissions.find(p => p.resource === permission.resource);
+    //     if (permissionAlreadyExists) {
+    //         throw new ApiError(httpStatus.BAD_REQUEST, 'Permission already exists');
+    //     }
+    // });
+
+    Object.assign(accessLevel.permissions, permissionsBody.permissions);
     await accessLevel.save();
     return accessLevel;
 }
