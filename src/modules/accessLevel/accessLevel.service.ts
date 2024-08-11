@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import AccessLevel from "./accessLevel.model";
 import { ApiError } from "../errors";
 import { IOptions, QueryResult } from '../paginate/paginate';
-import { addPermissionInterface, IAccessLevelDoc, NewCreatedAccessLevel, UpdateAccessLevelBody } from "./accessLevel.interfaces";
+import { addPermissionInterface, IAccessLevelDoc, NewCreatedAccessLevel, removePermissionInterface, UpdateAccessLevelBody } from "./accessLevel.interfaces";
 
 /**
  * Creates a new access level in the system.
@@ -65,14 +65,24 @@ export const addPermissionToAccessLevel = async (
         throw new ApiError(httpStatus.NOT_FOUND, 'AccessLevel not found');
     }
 
-    // permissionsBody.permissions.forEach(permission => {
-    //     let permissionAlreadyExists = accessLevel.permissions.find(p => p.resource === permission.resource);
-    //     if (permissionAlreadyExists) {
-    //         throw new ApiError(httpStatus.BAD_REQUEST, 'Permission already exists');
-    //     }
-    // });
-
     Object.assign(accessLevel.permissions, permissionsBody.permissions);
+    await accessLevel.save();
+    return accessLevel;
+}
+
+export const removePermissionFromAccessLevel = async (
+    accessLevelId: mongoose.Types.ObjectId,
+    permissionsBody: removePermissionInterface
+): Promise<IAccessLevelDoc | null> => {
+    const accessLevel = await getAccessLevelById(accessLevelId);
+    if (!accessLevel) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'AccessLevel not found');
+    }
+
+    permissionsBody.permissions.forEach(permission => {
+        accessLevel.permissions = accessLevel.permissions.filter(item => item.resource !== permission)
+    })
+
     await accessLevel.save();
     return accessLevel;
 }

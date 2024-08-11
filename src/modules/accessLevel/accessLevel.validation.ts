@@ -50,7 +50,7 @@ export const updateAccessLevel = {
         .min(1),
 };
 
-export const addPermissionInterface = {
+export const addPermission = {
     params: Joi.object().keys({
         accessLevelId: Joi.required().custom(objectId),
     }),
@@ -64,6 +64,16 @@ export const addPermissionInterface = {
             )
         }),
 };
+
+export const removePermission = {
+    params: Joi.object().keys({
+        accessLevelId: Joi.required().custom(objectId),
+    }),
+    body: Joi.object()
+        .keys({
+            permissions: Joi.array().items(Joi.string())
+        }),
+}
 
 export const deleteAccessLevel = {
     params: Joi.object().keys({

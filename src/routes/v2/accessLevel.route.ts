@@ -9,7 +9,8 @@ router.route('/')
     .get(validate(accessLevelValidation.getAccessLevels), accessLevelController.getAccessLevels);
 
 router.route('/add-permission/:accessLevelId')
-    .patch(validate(accessLevelValidation.addPermissionInterface), accessLevelController.addPermissionToAccessLevel)
+    .patch(validate(accessLevelValidation.addPermission), accessLevelController.addPermissionToAccessLevel)
+    .delete(validate(accessLevelValidation.removePermission), accessLevelController.removePermissionFromAccessLevel)
 
 router.route('/:accessLevelId')
     .get(validate(accessLevelValidation.getAccessLevel), accessLevelController.getAccessLevel)

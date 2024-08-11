@@ -27,4 +27,8 @@ export type addPermissionInterface = {
     }[]
 }
 
+export type removePermissionInterface = {
+    permissions: string[]
+}
+
 export type UpdateAccessLevelBody = Partial<NewCreatedAccessLevel>
