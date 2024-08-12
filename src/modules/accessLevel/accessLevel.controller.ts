@@ -13,7 +13,7 @@ export const createAccessLevel = catchAsync(async (req: Request, res: Response) 
 });
 
 export const getAccessLevels = catchAsync(async (req: Request, res: Response) => {
-    const filter = pick(req.query, ['name', 'address']);
+    const filter = pick(req.query, ['name']);
     const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
     const result = await accessLevelService.queryAccessLevels(filter, options);
     res.send(result);

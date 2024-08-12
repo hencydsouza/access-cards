@@ -67,6 +67,11 @@ export default router
  *           minimum: 1
  *           default: 1
  *         description: Page number
+ *       - in: query
+ *         name: name
+ *         schema:
+ *           type: string
+ *         description: Access level name
  *     responses:
  *       200:
  *         description: OK

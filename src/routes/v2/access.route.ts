@@ -20,7 +20,7 @@ export default router
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/AccessInput'
+ *             $ref: '#/components/schemas/Access'
  *     responses:
  *       200:
  *         description: Successful access

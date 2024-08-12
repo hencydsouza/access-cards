@@ -63,6 +63,11 @@ export default router
  *           minimum: 1
  *           default: 1
  *         description: Page number
+ *       - in: query
+ *         name: name
+ *         schema:
+ *           type: string
+ *         description: Company Name
  *     responses:
  *       "200":
  *         description: OK

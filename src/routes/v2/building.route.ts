@@ -33,7 +33,7 @@ export default router
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/BuildingInput'
+ *             $ref: '#/components/schemas/Building'
  *     responses:
  *       201:
  *         description: Created
@@ -63,6 +63,16 @@ export default router
  *           minimum: 1
  *           default: 1
  *         description: Page number
+ *       - in: query
+ *         name: address
+ *         schema:
+ *           type: string
+ *         description: address
+ *       - in: query
+ *         name: name
+ *         schema:
+ *           type: string
+ *         description: building name
  *     responses:
  *       200:
  *         description: OK

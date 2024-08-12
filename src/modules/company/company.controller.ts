@@ -13,7 +13,7 @@ export const createCompany = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const getCompanies = catchAsync(async (req: Request, res: Response) => {
-    const filter = pick(req.query, ['name', 'buildingName']);
+    const filter = pick(req.query, ['name']);
     const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
     const result = await companyService.queryCompanies(filter, options);
     res.send(result);

@@ -13,7 +13,7 @@ export const createConfig = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const getConfigs = catchAsync(async (req: Request, res: Response) => {
-    const filter = pick(req.query, ['name', 'address']);
+    const filter = pick(req.query, ['key']);
     const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
     const result = await configService.queryConfigs(filter, options);
     res.send(result);

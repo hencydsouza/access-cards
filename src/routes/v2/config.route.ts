@@ -63,6 +63,11 @@ export default router
  *           minimum: 1
  *           default: 1
  *         description: Page number
+ *       - in: query
+ *         name: key
+ *         schema:
+ *           type: string
+ *         description: Config key
  *     responses:
  *       "200":
  *         description: OK

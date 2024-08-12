@@ -20,6 +20,7 @@ export const createAccessLevel = {
 
 export const getAccessLevels = {
     query: Joi.object().keys({
+        name: Joi.string(),
         limit: Joi.number().integer(),
         page: Joi.number().integer(),
     }),

@@ -32,15 +32,16 @@ export const createEmployee = async (employeeBody: NewCreatedEmployee): Promise<
     // TODO: implement access card and access level logic
 
     if (employeeBody.accessLevels) {
-        employeeBody.accessLevels.forEach(async (accessObject) => {
+        await Promise.all(employeeBody.accessLevels.map(async (accessObject) => {
             const accessLevelExists = await AccessLevel.findOne({ name: accessObject.accessLevel });
             if (!accessLevelExists) {
                 throw new ApiError(httpStatus.BAD_REQUEST, 'Access level does not exist');
             }
-        });
+        }));
     }
 
-    return Employee.create(employeeBody);
+    const employee = await Employee.create(employeeBody);
+    return employee;
 };
 
 export const queryEmployees = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
