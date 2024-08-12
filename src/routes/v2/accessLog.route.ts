@@ -119,8 +119,6 @@ export default router
  *     responses:
  *       "200":
  *         description: OK
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
  *
  * /access-log/{accessLogId}:
  *   get:
@@ -140,10 +138,6 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/AccessLog'
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "404":
- *         $ref: '#/components/responses/NotFound'
  *   delete:
  *     summary: Delete an access log
  *     tags: [AccessLogs]
@@ -157,8 +151,4 @@ export default router
  *     responses:
  *       "204":
  *         description: No content
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "404":
- *         $ref: '#/components/responses/NotFound'
  */

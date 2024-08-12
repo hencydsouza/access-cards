@@ -41,10 +41,6 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Employee'
- *       "400":
- *         $ref: '#/components/responses/BadRequest'
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
  *   get:
  *     summary: Get all employees
  *     tags: [Employees]
@@ -92,10 +88,6 @@ export default router
  *                 totalResults:
  *                   type: integer
  *                   example: 1
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "403":
- *         $ref: '#/components/responses/Forbidden'
  * 
  * /employee/{id}:
  *   get:
@@ -115,12 +107,6 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Employee'
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "403":
- *         $ref: '#/components/responses/Forbidden'
- *       "404":
- *         $ref: '#/components/responses/NotFound'
  *   patch:
  *     summary: Update an employee
  *     tags: [Employees]
@@ -144,14 +130,6 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Employee'
- *       "400":
- *         $ref: '#/components/responses/BadRequest'
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "403":
- *         $ref: '#/components/responses/Forbidden'
- *       "404":
- *         $ref: '#/components/responses/NotFound'
  *   delete:
  *     summary: Delete an employee
  *     tags: [Employees]
@@ -165,10 +143,4 @@ export default router
  *     responses:
  *       "200":
  *         description: No content
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "403":
- *         $ref: '#/components/responses/Forbidden'
- *       "404":
- *         $ref: '#/components/responses/NotFound'
  */

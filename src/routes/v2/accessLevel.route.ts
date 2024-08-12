@@ -45,10 +45,6 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/AccessLevel'
- *       400:
- *         $ref: '#/components/responses/BadRequest'
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
  *   get:
  *     summary: Get all access levels
  *     tags: [Access Levels]
@@ -96,10 +92,6 @@ export default router
  *                 totalResults:
  *                   type: integer
  *                   example: 1
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- *       403:
- *         $ref: '#/components/responses/Forbidden'
  * 
  * /access-level/add-permission/{accessLevelId}:
  *   patch:
@@ -130,12 +122,6 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/AccessLevel'
- *       400:
- *         $ref: '#/components/responses/BadRequest'
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- *       404:
- *         $ref: '#/components/responses/NotFound'
  *   delete:
  *     summary: Remove a permission from an access level
  *     tags: [Access Levels]
@@ -164,12 +150,6 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/AccessLevel'
- *       400:
- *         $ref: '#/components/responses/BadRequest'
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- *       404:
- *         $ref: '#/components/responses/NotFound'
  * 
  * /access-level/{accessLevelId}:
  *   get:
@@ -189,12 +169,6 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/AccessLevel'
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- *       403:
- *         $ref: '#/components/responses/Forbidden'
- *       404:
- *         $ref: '#/components/responses/NotFound'
  *   patch:
  *     summary: Update an access level
  *     tags: [Access Levels]
@@ -223,14 +197,6 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/AccessLevel'
- *       400:
- *         $ref: '#/components/responses/BadRequest'
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- *       403:
- *         $ref: '#/components/responses/Forbidden'
- *       404:
- *         $ref: '#/components/responses/NotFound'
  *   delete:
  *     summary: Delete an access level
  *     tags: [Access Levels]
@@ -244,10 +210,4 @@ export default router
  *     responses:
  *       204:
  *         description: No content
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- *       403:
- *         $ref: '#/components/responses/Forbidden'
- *       404:
- *         $ref: '#/components/responses/NotFound'
  */

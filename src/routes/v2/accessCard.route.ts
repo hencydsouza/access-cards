@@ -41,10 +41,6 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/AccessCard'
- *       "400":
- *         $ref: '#/components/responses/BadRequest'
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
  *   get:
  *     summary: Get all access cards
  *     tags: [AccessCards]
@@ -87,8 +83,6 @@ export default router
  *                 totalResults:
  *                   type: integer
  *                   example: 1
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
  *
  * /access-card/{id}:
  *   get:
@@ -108,10 +102,6 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/AccessCard'
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "404":
- *         $ref: '#/components/responses/NotFound'
  *
  *   patch:
  *     summary: Update an access card
@@ -136,12 +126,6 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/AccessCard'
- *       "400":
- *         $ref: '#/components/responses/BadRequest'
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "404":
- *         $ref: '#/components/responses/NotFound'
  *
  *   delete:
  *     summary: Delete an access card
@@ -156,8 +140,4 @@ export default router
  *     responses:
  *       "200":
  *         description: No content
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "404":
- *         $ref: '#/components/responses/NotFound'
  */

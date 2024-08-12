@@ -28,10 +28,4 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/AccessResponse'
- *       400:
- *         $ref: '#/components/responses/BadRequest'
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */

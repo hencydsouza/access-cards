@@ -41,10 +41,6 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Company'
- *       "400":
- *         $ref: '#/components/responses/BadRequest'
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
  *   get:
  *     summary: Get all companies
  *     tags: [Companies]
@@ -92,10 +88,6 @@ export default router
  *                 totalResults:
  *                   type: integer
  *                   example: 1
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "403":
- *         $ref: '#/components/responses/Forbidden'
  * 
  * /company/{id}:
  *   get:
@@ -115,12 +107,6 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Company'
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "403":
- *         $ref: '#/components/responses/Forbidden'
- *       "404":
- *         $ref: '#/components/responses/NotFound'
  *   patch:
  *     summary: Update a company
  *     tags: [Companies]
@@ -144,14 +130,6 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Company'
- *       "400":
- *         $ref: '#/components/responses/BadRequest'
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "403":
- *         $ref: '#/components/responses/Forbidden'
- *       "404":
- *         $ref: '#/components/responses/NotFound'
  *   delete:
  *     summary: Delete a company
  *     tags: [Companies]
@@ -165,10 +143,4 @@ export default router
  *     responses:
  *       "200":
  *         description: No content
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "403":
- *         $ref: '#/components/responses/Forbidden'
- *       "404":
- *         $ref: '#/components/responses/NotFound'
  */

@@ -41,10 +41,6 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Building'
- *       400:
- *         $ref: '#/components/responses/BadRequest'
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
  *   get:
  *     summary: Get all buildings
  *     tags: [Buildings]
@@ -97,8 +93,6 @@ export default router
  *                 totalResults:
  *                   type: integer
  *                   example: 1
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
  *
  * /building/{id}:
  *   get:
@@ -118,10 +112,6 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Building'
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- *       404:
- *         $ref: '#/components/responses/NotFound'
  *
  *   patch:
  *     summary: Update a building
@@ -146,12 +136,6 @@ export default router
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Building'
- *       400:
- *         $ref: '#/components/responses/BadRequest'
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- *       404:
- *         $ref: '#/components/responses/NotFound'
  *
  *   delete:
  *     summary: Delete a building
@@ -166,8 +150,4 @@ export default router
  *     responses:
  *       204:
  *         description: No content
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- *       404:
- *         $ref: '#/components/responses/NotFound'
  */
