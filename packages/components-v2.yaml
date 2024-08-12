@@ -76,22 +76,28 @@ components:
     AccessCard:
       type: object
       properties:
-        cardNumber: string,
+        cardNumber: 
+          type: string
         cardHolder: 
           type: object
           properties:
             employeeId:
               type: string
-        issued_at: string
-        valid_until: string
-        is_active: boolean
+        issued_at: 
+          type: string
+        valid_until: 
+          type: string
+        is_active: 
+          type: boolean
       example:
         cardHolder: {employeeId: '66b9d457f5a21d2fbc76d240'}
     Config:
       type: object
       properties:
-        key: string
-        value: number
+        key: 
+          type: string
+        value: 
+          type: number
       example:
         key: 'key'
         value: 10
