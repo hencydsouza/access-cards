@@ -14,7 +14,8 @@ export const createConfig = {
 export const getConfigs = {
     query: Joi.object().keys({
         key: Joi.string(),
-        value: Joi.number()
+        limit: Joi.number().integer(),
+        page: Joi.number().integer(),
     }),
 };
 

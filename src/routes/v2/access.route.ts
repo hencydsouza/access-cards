@@ -8,3 +8,30 @@ router.route('/')
     .post(validate(accessValidation.Access), accessController.access)
 
 export default router
+
+/**
+ * @swagger
+ * /access:
+ *   post:
+ *     summary: Access endpoint
+ *     tags: [Access]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AccessInput'
+ *     responses:
+ *       200:
+ *         description: Successful access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AccessResponse'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */

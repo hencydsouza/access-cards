@@ -17,7 +17,9 @@ export const createBuilding = {
 export const getBuildings = {
     query: Joi.object().keys({
         name: Joi.string(),
-        address: Joi.string()
+        address: Joi.string(),
+        limit: Joi.number().integer(),
+        page: Joi.number().integer(),
     }),
 };
 

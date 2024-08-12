@@ -3,7 +3,7 @@ import config from '../../config/config';
 const swaggerDefinition = {
   openapi: '3.0.0',
   info: {
-    title: 'node-express-typescript-boilerplate API documentation',
+    title: 'Access Card API',
     version: '0.0.1',
     description: 'This is a node express mongoose boilerplate in typescript',
     license: {
@@ -13,7 +13,7 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: `http://localhost:${config.port}/v1`,
+      url: `http://localhost:${config.port}/v2`,
       description: 'Development Server',
     },
   ],

@@ -18,7 +18,9 @@ export const createCompany = {
 export const getCompanies = {
     query: Joi.object().keys({
         name: Joi.string(),
-        buildingName: Joi.string()
+        buildingName: Joi.string(),
+        limit: Joi.number().integer(),
+        page: Joi.number().integer(),
     }),
 };
 

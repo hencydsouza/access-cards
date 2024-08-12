@@ -18,7 +18,9 @@ export const createAccessCard = {
 
 export const getAccessCards = {
     query: Joi.object().keys({
-        cardNumber: Joi.string()
+        cardNumber: Joi.string(),
+        limit: Joi.number().integer(),
+        page: Joi.number().integer(),
     }),
 };
 

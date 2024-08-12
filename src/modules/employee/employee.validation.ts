@@ -24,9 +24,20 @@ export const createEmployee = {
 
 export const getEmployees = {
     query: Joi.object().keys({
-        name: Joi.string()
+        name: Joi.string(),
+        limit: Joi.number().integer(),
+        page: Joi.number().integer(),
     }),
 };
+
+// query: Joi.object().keys({
+//     name: Joi.string(),
+//     role: Joi.string(),
+//     sortBy: Joi.string(),
+//     projectBy: Joi.string(),
+//     limit: Joi.number().integer(),
+//     page: Joi.number().integer(),
+// }),
 
 export const getEmployee = {
     params: Joi.object().keys({
@@ -42,7 +53,13 @@ export const updateEmployee = {
         .keys({
             name: Joi.string(),
             buildingName: Joi.string(),
-            companyName: Joi.string()
+            companyName: Joi.string(),
+            accessCardId: Joi.custom(objectId),
+            accessLevels: Joi.array().items(
+                Joi.object({
+                    accessLevel: Joi.string().required()
+                })
+            )
         })
         .min(1),
 };

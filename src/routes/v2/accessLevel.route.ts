@@ -18,3 +18,231 @@ router.route('/:accessLevelId')
     .delete(validate(accessLevelValidation.deleteAccessLevel), accessLevelController.deleteAccessLevel)
 
 export default router
+
+/**
+ * @swagger
+ * tags:
+ *   name: Access Levels
+ *   description: Access level management
+ */
+
+/**
+ * @swagger
+ * /access-level:
+ *   post:
+ *     summary: Create a new access level
+ *     tags: [Access Levels]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AccessLevel'
+ *     responses:
+ *       201:
+ *         description: Created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AccessLevel'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *   get:
+ *     summary: Get all access levels
+ *     tags: [Access Levels]
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         default: 10
+ *         description: Maximum number of access levels
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/AccessLevel'
+ *                 page:
+ *                   type: integer
+ *                   example: 1
+ *                 limit:
+ *                   type: integer
+ *                   example: 10
+ *                 totalPages:
+ *                   type: integer
+ *                   example: 1
+ *                 totalResults:
+ *                   type: integer
+ *                   example: 1
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       403:
+ *         $ref: '#/components/responses/Forbidden'
+ * 
+ * /access-level/add-permission/{accessLevelId}:
+ *   patch:
+ *     summary: Add a permission to an access level
+ *     tags: [Access Levels]
+ *     parameters:
+ *       - in: path
+ *         name: accessLevelId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Access level id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - permissionId
+ *             properties:
+ *               permissionId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AccessLevel'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *   delete:
+ *     summary: Remove a permission from an access level
+ *     tags: [Access Levels]
+ *     parameters:
+ *       - in: path
+ *         name: accessLevelId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Access level id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - permissionId
+ *             properties:
+ *               permissionId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AccessLevel'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ * 
+ * /access-level/{accessLevelId}:
+ *   get:
+ *     summary: Get an access level
+ *     tags: [Access Levels]
+ *     parameters:
+ *       - in: path
+ *         name: accessLevelId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Access level id
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AccessLevel'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       403:
+ *         $ref: '#/components/responses/Forbidden'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *   patch:
+ *     summary: Update an access level
+ *     tags: [Access Levels]
+ *     parameters:
+ *       - in: path
+ *         name: accessLevelId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Access level id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AccessLevel'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       403:
+ *         $ref: '#/components/responses/Forbidden'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *   delete:
+ *     summary: Delete an access level
+ *     tags: [Access Levels]
+ *     parameters:
+ *       - in: path
+ *         name: accessLevelId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Access level id
+ *     responses:
+ *       204:
+ *         description: No content
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       403:
+ *         $ref: '#/components/responses/Forbidden'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ */
