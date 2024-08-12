@@ -7,8 +7,9 @@ import { createAccessLog } from "../accessLog/accessLog.service";
 import { Company } from "../company";
 import { IEmployeeDoc } from "../employee/employee.interfaces";
 import { AccessLevel } from "../accessLevel";
+import { IAccessLog } from "../accessLog/accessLog.interfaces";
 
-export const accessService = async (accessBody: IAccess): Promise<any> => {
+export const accessService = async (accessBody: IAccess): Promise<string | IAccessLog> => {
     const accessCard = await AccessCard.findById(accessBody.accessCardId);
     if (!accessCard) {
         throw new ApiError(httpStatus.NOT_FOUND, 'AccessCard not found');
@@ -137,7 +138,7 @@ export const accessService = async (accessBody: IAccess): Promise<any> => {
         throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Failed to create access log');
     }
 
-    return permissionArray.length > 0 ? `Access to ${accessBody.resource} granted` : accessCard;
+    return permissionArray.length > 0 ? `Access to ${accessBody.resource} granted` : accessLog;
 };
 
 // Function to check if the employee's company owns the building

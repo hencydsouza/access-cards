@@ -1,5 +1,5 @@
 import httpStatus from "http-status";
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 import Config from "./config.model";
 import { ApiError } from "../errors";
 import { IOptions, QueryResult } from '../paginate/paginate';
@@ -14,7 +14,7 @@ export const createConfig = async (configBody: NewCreatedConfig): Promise<IConfi
     return Config.create(configBody);
 };
 
-export const queryConfigs = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
+export const queryConfigs = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult<Document<IConfigDoc>>> => {
     const configs = await Config.paginate(filter, options);
     return configs;
 };

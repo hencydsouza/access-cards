@@ -10,6 +10,7 @@ export interface IAccessLog {
         buildingId: mongoose.Types.ObjectId;
         companyId: mongoose.Types.ObjectId;
         accessType: string;
+        // resource: string;
         timestamp: Date;
     }
 }
@@ -26,6 +27,7 @@ export type NewCreatedAccessLog = {
     buildingId: mongoose.Types.ObjectId;
     companyId: mongoose.Types.ObjectId;
     accessType: string;
+    // resource: string;
     timestamp: Date;
 }
 

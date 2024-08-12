@@ -1,5 +1,5 @@
 import httpStatus from "http-status";
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 import AccessLevel from "./accessLevel.model";
 import { ApiError } from "../errors";
 import { IOptions, QueryResult } from '../paginate/paginate';
@@ -27,7 +27,7 @@ export const createAccessLevel = async (accessLevelBody: NewCreatedAccessLevel):
  * @param options - An object containing the pagination options for the query.
  * @returns A Promise that resolves to a QueryResult object containing the paginated access levels.
  */
-export const queryAccessLevels = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
+export const queryAccessLevels = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult<Document<IAccessLevelDoc>>> => {
     const accessLevels = await AccessLevel.paginate(filter, options);
     return accessLevels;
 };

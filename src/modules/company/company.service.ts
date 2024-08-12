@@ -1,5 +1,5 @@
 import httpStatus from "http-status";
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 import Company from "./company.model";
 import { ApiError } from "../errors";
 import { IOptions, QueryResult } from '../paginate/paginate';
@@ -51,7 +51,7 @@ export const createCompany = async (companyBody: NewCreatedCompany): Promise<ICo
  * @param {Object} options - Query options
  * @returns {Promise<QueryResult>}
  */
-export const queryCompanies = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
+export const queryCompanies = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult<Document<ICompanyDoc>>> => {
     const companies = await Company.paginate(filter, options);
     return companies;
 };

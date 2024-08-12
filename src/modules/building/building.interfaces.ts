@@ -22,3 +22,12 @@ export type NewCreatedBuilding = {
 }
 
 export type UpdateBuildingBody = Partial<NewCreatedBuilding>
+
+// Response Types
+export type AllBuildingsResponse = {
+    results: IBuildingDoc[],
+    page: number,
+    limit: number,
+    totalPages: number,
+    totalResults: number,
+}

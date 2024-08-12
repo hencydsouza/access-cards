@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 import { Schema, Document, Model } from 'mongoose';
 
-export interface QueryResult {
-  results: Document[];
+export interface QueryResult<D = Document> {
+  results: D[];
   page: number;
   limit: number;
   totalPages: number;

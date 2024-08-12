@@ -1,5 +1,5 @@
 import httpStatus from "http-status";
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 import Employee from "./employee.model";
 import { ApiError } from "../errors";
 import { IOptions, QueryResult } from '../paginate/paginate';
@@ -44,7 +44,7 @@ export const createEmployee = async (employeeBody: NewCreatedEmployee): Promise<
     return employee;
 };
 
-export const queryEmployees = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
+export const queryEmployees = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult<Document<IEmployeeDoc>>> => {
     const employees = await Employee.paginate(filter, options);
     return employees;
 };

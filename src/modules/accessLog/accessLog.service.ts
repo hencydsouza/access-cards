@@ -1,5 +1,5 @@
 import httpStatus from "http-status";
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 import AccessLog from "./accessLog.model";
 import { ApiError } from "../errors";
 import { IOptions, QueryResult } from '../paginate/paginate';
@@ -35,7 +35,7 @@ export const createAccessLog = async (accessLogBody: NewCreatedAccessLog): Promi
 
     // check if the logTime falls within the lastAccessLog
     const lastAccessLog = await AccessLog.findOne({}, {}, { sort: { updatedAt: -1 } })
-    
+
     if (lastAccessLog?.bucketEndTime && lastAccessLog.bucketEndTime > logTime) {
         const log = {
             accessCardId: accessLogBody.accessCardId,
@@ -61,6 +61,7 @@ export const createAccessLog = async (accessLogBody: NewCreatedAccessLog): Promi
                 companyId: accessLogBody.companyId,
                 buildingId: accessLogBody.buildingId,
                 accessType: accessLogBody.accessType,
+                // resource: accessLogBody.resource,
                 timestamp: accessLogBody.timestamp || Date.now()
             }]
         })
@@ -69,7 +70,7 @@ export const createAccessLog = async (accessLogBody: NewCreatedAccessLog): Promi
     }
 };
 
-export const queryAccessLogs = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
+export const queryAccessLogs = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult<Document<IAccessLogDoc>>> => {
     const accessLogs = await AccessLog.paginate(filter, options);
     return accessLogs;
 };

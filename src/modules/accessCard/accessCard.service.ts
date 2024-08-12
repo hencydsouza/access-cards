@@ -1,5 +1,5 @@
 import httpStatus from "http-status";
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 import AccessCard from "./accessCard.model";
 import { ApiError } from "../errors";
 import { IOptions, QueryResult } from '../paginate/paginate';
@@ -45,7 +45,7 @@ export const createAccessCard = async (accessCardBody: NewCreatedAccessCard): Pr
     return accessCard;
 };
 
-export const queryAccessCards = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
+export const queryAccessCards = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult<Document<IAccessCardDoc>>> => {
     const accessCard = await AccessCard.paginate(filter, options);
     return accessCard;
 };

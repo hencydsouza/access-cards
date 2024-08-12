@@ -42,6 +42,10 @@ const accessLogSchema = new mongoose.Schema<IAccessLogDoc, IAccessLogModel>({
             enum: ['login', 'logout', 'access'],
             required: true,
         },
+        // resource: {
+        //     type: String,
+        //     required: true,
+        // },
         timestamp: {
             type: Date,
             required: true,

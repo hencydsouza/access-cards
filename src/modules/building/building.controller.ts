@@ -9,14 +9,14 @@ import * as buildingService from './building.service'
 
 export const createBuilding = catchAsync(async (req: Request, res: Response) => {
     const building = await buildingService.createBuilding(req.body);
-    res.status(httpStatus.CREATED).send(building);
+    res.status(httpStatus.CREATED).json(building);
 });
 
 export const getBuildings = catchAsync(async (req: Request, res: Response) => {
     const filter = pick(req.query, ['name', 'address']);
     const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
     const result = await buildingService.queryBuildings(filter, options);
-    res.send(result);
+    res.json(result);
 });
 
 export const getBuilding = catchAsync(async (req: Request, res: Response) => {
@@ -25,7 +25,7 @@ export const getBuilding = catchAsync(async (req: Request, res: Response) => {
         if (!building) {
             throw new ApiError(httpStatus.NOT_FOUND, 'Building not found');
         }
-        res.send(building);
+        res.json(building);
     }
 });
 

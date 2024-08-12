@@ -1,5 +1,5 @@
 import httpStatus from "http-status";
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 import Building from "./building.model";
 import { ApiError } from "../errors";
 import { IOptions, QueryResult } from '../paginate/paginate';
@@ -33,7 +33,7 @@ export const createBuilding = async (buildingBody: NewCreatedBuilding): Promise<
  * @param {Object} options - Query options
  * @returns {Promise<QueryResult>}
  */
-export const queryBuildings = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult> => {
+export const queryBuildings = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult<Document<IBuildingDoc>>> => {
     const buildings = await Building.paginate(filter, options);
     return buildings;
 };

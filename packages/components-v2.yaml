@@ -29,6 +29,7 @@ components:
         name: Company name
         buildingName: Building name
         ownedBuildings: [{buildingName: 'Building name'}]
+        
     Employee:
       type: object
       properties:
@@ -50,6 +51,7 @@ components:
         companyName: Company name
         buildingName: Building name
         accessLevels: [{accessLevel: 'Access level'}]
+
     AccessLevel:
       type: object
       properties:
@@ -73,6 +75,7 @@ components:
         type: company
         description: Access level description
         permissions: [{resource: 'company', action: 'access'}]  
+
     AccessCard:
       type: object
       properties:
@@ -91,6 +94,7 @@ components:
           type: boolean
       example:
         cardHolder: {employeeId: '66b9d457f5a21d2fbc76d240'}
+
     Config:
       type: object
       properties:
@@ -101,6 +105,7 @@ components:
       example:
         key: 'key'
         value: 10
+
     Access: 
       type: object
       properties:
@@ -122,6 +127,7 @@ components:
         buildingId: '66b9bb2cc6628e6d3a605ed5'
         accessType: 'login'
         resource: ['company']
+
     AccessLog:
       type: object
       properties:
