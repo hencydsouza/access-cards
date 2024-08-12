@@ -65,6 +65,7 @@ const config = {
     from: envVars.EMAIL_FROM,
   },
   clientUrl: envVars.CLIENT_URL,
+  swaggerUrl: envVars.SWAGGER_URL
 };
 
 export default config;
