@@ -6,8 +6,9 @@ import ApiError from '../errors/ApiError';
 import pick from '../utils/pick';
 import { IOptions } from '../paginate/paginate';
 import * as accessLevelService from './accessLevel.service'
+import { IAccessLevelDoc } from './accessLevel.interfaces';
 
-export const createAccessLevel = catchAsync(async (req: Request, res: Response) => {
+export const createAccessLevel = catchAsync(async (req: Request, res: Response<IAccessLevelDoc>) => {
     const accessLevel = await accessLevelService.createAccessLevel(req.body);
     res.status(httpStatus.CREATED).send(accessLevel);
 });
@@ -19,7 +20,7 @@ export const getAccessLevels = catchAsync(async (req: Request, res: Response) =>
     res.send(result);
 });
 
-export const getAccessLevel = catchAsync(async (req: Request, res: Response) => {
+export const getAccessLevel = catchAsync(async (req: Request, res: Response<IAccessLevelDoc>) => {
     if (typeof req.params['accessLevelId'] === 'string') {
         const accessLevel = await accessLevelService.getAccessLevelById(new mongoose.Types.ObjectId(req.params['accessLevelId']));
         if (!accessLevel) {
@@ -29,27 +30,27 @@ export const getAccessLevel = catchAsync(async (req: Request, res: Response) => 
     }
 });
 
-export const updateAccessLevel = catchAsync(async (req: Request, res: Response) => {
+export const updateAccessLevel = catchAsync(async (req: Request, res: Response<IAccessLevelDoc | null>) => {
     if (typeof req.params['accessLevelId'] === 'string') {
         const accessLevel = await accessLevelService.updateAccessLevelById(new mongoose.Types.ObjectId(req.params['accessLevelId']), req.body);
         res.send(accessLevel);
     }
 });
 
-export const addPermissionToAccessLevel = catchAsync(async (req: Request, res: Response) => {
+export const addPermissionToAccessLevel = catchAsync(async (req: Request, res: Response<IAccessLevelDoc | null>) => {
     if (typeof req.params['accessLevelId'] === 'string') {
         const accessLevel = await accessLevelService.addPermissionToAccessLevel(new mongoose.Types.ObjectId(req.params['accessLevelId']), req.body);
         res.send(accessLevel);
     }
 })
 
-export const removePermissionFromAccessLevel = catchAsync(async (req: Request, res: Response) => {
+export const removePermissionFromAccessLevel = catchAsync(async (req: Request, res: Response<IAccessLevelDoc | null>) => {
     if (typeof req.params['accessLevelId'] === 'string') {
         const accessLevel = await accessLevelService.removePermissionFromAccessLevel(new mongoose.Types.ObjectId(req.params['accessLevelId']), req.body);
         res.send(accessLevel);
     }
 })
-export const deleteAccessLevel = catchAsync(async (req: Request, res: Response) => {
+export const deleteAccessLevel = catchAsync(async (req: Request, res: Response<null>) => {
     if (typeof req.params['accessLevelId'] === 'string') {
         await accessLevelService.deleteAccessLevelById(new mongoose.Types.ObjectId(req.params['accessLevelId']));
         res.status(httpStatus.NO_CONTENT).send();

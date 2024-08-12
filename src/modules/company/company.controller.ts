@@ -6,8 +6,9 @@ import ApiError from '../errors/ApiError';
 import pick from '../utils/pick';
 import { IOptions } from '../paginate/paginate';
 import * as companyService from './company.service'
+import { ICompanyDoc } from './company.interfaces';
 
-export const createCompany = catchAsync(async (req: Request, res: Response) => {
+export const createCompany = catchAsync(async (req: Request, res: Response<ICompanyDoc>) => {
     const company = await companyService.createCompany(req.body);
     res.status(httpStatus.CREATED).send(company);
 });
@@ -19,7 +20,7 @@ export const getCompanies = catchAsync(async (req: Request, res: Response) => {
     res.send(result);
 });
 
-export const getCompany = catchAsync(async (req: Request, res: Response) => {
+export const getCompany = catchAsync(async (req: Request, res: Response<ICompanyDoc>) => {
     if (typeof req.params['companyId'] === 'string') {
         const company = await companyService.getCompanyById(new mongoose.Types.ObjectId(req.params['companyId']));
         if (!company) {
@@ -29,14 +30,14 @@ export const getCompany = catchAsync(async (req: Request, res: Response) => {
     }
 });
 
-export const updateCompany = catchAsync(async (req: Request, res: Response) => {
+export const updateCompany = catchAsync(async (req: Request, res: Response<ICompanyDoc | null>) => {
     if (typeof req.params['companyId'] === 'string') {
         const company = await companyService.updateCompanyById(new mongoose.Types.ObjectId(req.params['companyId']), req.body);
         res.send(company);
     }
 });
 
-export const deleteCompany = catchAsync(async (req: Request, res: Response) => {
+export const deleteCompany = catchAsync(async (req: Request, res: Response<{ message: string }>) => {
     if (typeof req.params['companyId'] === 'string') {
         await companyService.deleteCompanyById(new mongoose.Types.ObjectId(req.params['companyId']));
         res.status(httpStatus.OK).send({ message: "Company and it's reference from employees removed" });

@@ -6,8 +6,9 @@ import ApiError from '../errors/ApiError';
 import pick from '../utils/pick';
 import { IOptions } from '../paginate/paginate';
 import * as configService from './config.service'
+import { IConfigDoc } from './config.interfaces';
 
-export const createConfig = catchAsync(async (req: Request, res: Response) => {
+export const createConfig = catchAsync(async (req: Request, res: Response<IConfigDoc>) => {
     const config = await configService.createConfig(req.body);
     res.status(httpStatus.CREATED).send(config);
 });
@@ -19,7 +20,7 @@ export const getConfigs = catchAsync(async (req: Request, res: Response) => {
     res.send(result);
 });
 
-export const getConfigById = catchAsync(async (req: Request, res: Response) => {
+export const getConfigById = catchAsync(async (req: Request, res: Response<IConfigDoc>) => {
     if (typeof req.params['configId'] === 'string') {
         const config = await configService.getConfigById(new mongoose.Types.ObjectId(req.params['configId']));
         if (!config) {
@@ -29,14 +30,14 @@ export const getConfigById = catchAsync(async (req: Request, res: Response) => {
     }
 });
 
-export const updateConfig = catchAsync(async (req: Request, res: Response) => {
+export const updateConfig = catchAsync(async (req: Request, res: Response<IConfigDoc | null>) => {
     if (typeof req.params['configId'] === 'string') {
         const config = await configService.updateConfigById(new mongoose.Types.ObjectId(req.params['configId']), req.body);
         res.send(config);
     }
 });
 
-export const deleteConfig = catchAsync(async (req: Request, res: Response) => {
+export const deleteConfig = catchAsync(async (req: Request, res: Response<null>) => {
     if (typeof req.params['configId'] === 'string') {
         await configService.deleteConfigById(new mongoose.Types.ObjectId(req.params['configId']));
         res.status(httpStatus.NO_CONTENT).send();
