@@ -20,6 +20,7 @@ export default async function reConfigureAccessLogs(interval: number) {
             buildingId: mongoose.Types.ObjectId;
             companyId: mongoose.Types.ObjectId;
             accessType: string;
+            eventType: string;
             timestamp: Date;
         }[]
     }
@@ -33,6 +34,7 @@ export default async function reConfigureAccessLogs(interval: number) {
             employeeId: log.employeeId.toString(),
             buildingId: log.buildingId.toString(),
             companyId: log.companyId.toString(),
+            eventType: log.eventType,
             accessType: log.accessType,
             timestamp: log.timestamp
         };
