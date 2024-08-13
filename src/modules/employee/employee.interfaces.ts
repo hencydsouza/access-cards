@@ -3,6 +3,7 @@ import { QueryResult } from '../paginate/paginate';
 
 export interface IEmployee {
     name: string,
+    email: string,
     company: {
         companyId: mongoose.Types.ObjectId,
         buildingId: mongoose.Types.ObjectId
@@ -17,11 +18,13 @@ export interface IEmployeeDoc extends IEmployee, Document { }
 
 export interface IEmployeeModel extends Model<IEmployeeDoc> {
     isNameTaken(name: string, excludeEmployeeId?: mongoose.Types.ObjectId): Promise<boolean>;
+    isEmailTaken(email: string, excludeEmployeeId?: mongoose.Types.ObjectId): Promise<boolean>;
     paginate(filter: Record<string, any>, options: Record<string, any>): Promise<QueryResult>;
 }
 
 export type NewCreatedEmployee = {
     name: string,
+    email: string,
     companyName: string,
     buildingName: string,
     company?: {

@@ -10,6 +10,10 @@ import { AccessLevel } from "../accessLevel";
 // import { Building } from "../building";
 
 export const createEmployee = async (employeeBody: NewCreatedEmployee): Promise<IEmployeeDoc> => {
+    if (await Employee.isEmailTaken(employeeBody.email)) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+    }
+
     const targetCompany = await Company.findOne({ name: employeeBody.companyName })
     if (!targetCompany)
         throw new ApiError(httpStatus.NOT_FOUND, 'Company does not exist')
@@ -74,6 +78,10 @@ export const updateEmployeeById = async (
             throw new ApiError(httpStatus.NOT_FOUND, 'Building not found')
         }
         employee.company.buildingId = targetBuilding._id
+    }
+
+    if (updateBody.email && (await Employee.isEmailTaken(updateBody.email, employeeId))) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
     }
 
     // TODO: implement access card, access level logic if changed

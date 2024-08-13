@@ -4,6 +4,7 @@ import { objectId } from '../validate/custom.validation';
 
 const createEmployeeBody: Record<keyof NewCreatedEmployee, any> = {
     name: Joi.string().required(),
+    email: Joi.string().email().required(),
     companyName: Joi.string().required(),
     buildingName: Joi.string().required(),
     company: Joi.object({
@@ -30,15 +31,6 @@ export const getEmployees = {
     }),
 };
 
-// query: Joi.object().keys({
-//     name: Joi.string(),
-//     role: Joi.string(),
-//     sortBy: Joi.string(),
-//     projectBy: Joi.string(),
-//     limit: Joi.number().integer(),
-//     page: Joi.number().integer(),
-// }),
-
 export const getEmployee = {
     params: Joi.object().keys({
         employeeId: Joi.string().custom(objectId),
@@ -52,6 +44,7 @@ export const updateEmployee = {
     body: Joi.object()
         .keys({
             name: Joi.string(),
+            email: Joi.string().email(),
             buildingName: Joi.string(),
             companyName: Joi.string(),
             accessCardId: Joi.custom(objectId),
