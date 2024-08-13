@@ -140,7 +140,8 @@ export const refreshPermissions = async (employeeId: mongoose.Types.ObjectId): P
                 'pipeline': [
                     {
                         '$project': {
-                            'permissions': 1
+                            'permissions': 1,
+                            'type': 1
                         }
                     }, {
                         '$unwind': '$permissions'
@@ -148,7 +149,8 @@ export const refreshPermissions = async (employeeId: mongoose.Types.ObjectId): P
                         '$project': {
                             '_id': '$permissions._id',
                             'resource': '$permissions.resource',
-                            'action': '$permissions.action'
+                            'action': '$permissions.action',
+                            'type': '$type'
                         }
                     }
                 ],

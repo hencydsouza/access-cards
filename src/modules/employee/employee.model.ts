@@ -62,6 +62,9 @@ const employeeSchema = new mongoose.Schema<IEmployeeDoc, IEmployeeModel>({
             },
             action: {
                 type: String
+            },
+            type: {
+                type: String
             }
         }
     ]
