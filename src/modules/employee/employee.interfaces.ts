@@ -1,9 +1,11 @@
 import mongoose, { Document, Model } from "mongoose";
 import { QueryResult } from '../paginate/paginate';
+import { AccessAndRefreshTokens } from "../employee_token/token.interfaces";
 
 export interface IEmployee {
     name: string,
     email: string,
+    password: string
     company: {
         companyId: mongoose.Types.ObjectId,
         buildingId: mongoose.Types.ObjectId
@@ -14,7 +16,9 @@ export interface IEmployee {
     }[]
 }
 
-export interface IEmployeeDoc extends IEmployee, Document { }
+export interface IEmployeeDoc extends IEmployee, Document {
+    isPasswordMatch(password: string): Promise<boolean>;
+}
 
 export interface IEmployeeModel extends Model<IEmployeeDoc> {
     isNameTaken(name: string, excludeEmployeeId?: mongoose.Types.ObjectId): Promise<boolean>;
@@ -25,6 +29,7 @@ export interface IEmployeeModel extends Model<IEmployeeDoc> {
 export type NewCreatedEmployee = {
     name: string,
     email: string,
+    password?: string
     companyName: string,
     buildingName: string,
     company?: {
@@ -38,3 +43,8 @@ export type NewCreatedEmployee = {
 }
 
 export type UpdateEmployeeBody = Partial<NewCreatedEmployee>
+
+export interface IEmployeeWithTokens {
+    employee: IEmployeeDoc;
+    tokens: AccessAndRefreshTokens;
+}

@@ -3,6 +3,7 @@ import toJSON from '../toJSON/toJSON';
 import paginate from '../paginate/paginate';
 import { IEmployeeDoc, IEmployeeModel } from "./employee.interfaces";
 import validator from "validator";
+import bcrypt from 'bcryptjs'
 
 const employeeSchema = new mongoose.Schema<IEmployeeDoc, IEmployeeModel>({
     name: {
@@ -21,6 +22,18 @@ const employeeSchema = new mongoose.Schema<IEmployeeDoc, IEmployeeModel>({
                 throw new Error('Invalid email');
             }
         },
+    },
+    password: {
+        type: String,
+        required: true,
+        trim: true,
+        minlength: 8,
+        validate(value: string) {
+            if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
+                throw new Error('Password must contain at least one letter and one number');
+            }
+        },
+        private: true,
     },
     company: {
         companyId: {
@@ -57,6 +70,20 @@ employeeSchema.static('isEmailTaken', async function (email: string, excludeEmpl
     const employee = await this.findOne({ email, _id: { $ne: excludeEmployeeId } });
     return !!employee;
 });
+
+employeeSchema.method('isPasswordMatch', async function (password: string): Promise<boolean> {
+    const employee = this;
+    return bcrypt.compare(password, employee.password);
+});
+
+employeeSchema.pre('save', async function (next) {
+    const employee = this;
+    if (employee.isModified('password')) {
+        employee.password = await bcrypt.hash(employee.password, 8);
+    }
+    next();
+});
+
 
 const Employee = mongoose.model<IEmployeeDoc, IEmployeeModel>('Employee', employeeSchema)
 

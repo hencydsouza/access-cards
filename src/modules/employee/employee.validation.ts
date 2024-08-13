@@ -1,10 +1,11 @@
 import Joi from 'joi';
 import { NewCreatedEmployee } from './employee.interfaces';
-import { objectId } from '../validate/custom.validation';
+import { objectId, password } from '../validate/custom.validation';
 
 const createEmployeeBody: Record<keyof NewCreatedEmployee, any> = {
     name: Joi.string().required(),
     email: Joi.string().email().required(),
+    password: Joi.string().optional().custom(password),
     companyName: Joi.string().required(),
     buildingName: Joi.string().required(),
     company: Joi.object({
@@ -45,6 +46,7 @@ export const updateEmployee = {
         .keys({
             name: Joi.string(),
             email: Joi.string().email(),
+            password: Joi.string().custom(password),
             buildingName: Joi.string(),
             companyName: Joi.string(),
             accessCardId: Joi.custom(objectId),

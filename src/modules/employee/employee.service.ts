@@ -33,6 +33,10 @@ export const createEmployee = async (employeeBody: NewCreatedEmployee): Promise<
     //     throw new ApiError(httpStatus.BAD_REQUEST, 'Employee with this name already exists in the company');
     // }
 
+    if (!employeeBody.password) {
+        employeeBody.password = 'pass1234';
+    }
+
     // TODO: implement access card and access level logic
 
     if (employeeBody.accessLevels) {
@@ -54,6 +58,9 @@ export const queryEmployees = async (filter: Record<string, any>, options: IOpti
 };
 
 export const getEmployeeById = async (employeeId: mongoose.Types.ObjectId): Promise<IEmployeeDoc | null> => Employee.findById(employeeId);
+
+export const getEmployeeByEmail = async (email: string): Promise<IEmployeeDoc | null> => Employee.findOne({ email });
+
 
 export const updateEmployeeById = async (
     employeeId: mongoose.Types.ObjectId,
