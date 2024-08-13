@@ -27,7 +27,8 @@ export type NewCreatedAccessLog = {
     buildingId: mongoose.Types.ObjectId;
     companyId: mongoose.Types.ObjectId;
     accessType: string;
-    // resource: string;
+    eventType: string;
+    resource: string[] | undefined;
     timestamp: Date;
 }
 

@@ -6,7 +6,7 @@ const accessBody: Record<keyof IAccess, any> = {
     accessCardId: Joi.string().custom(objectId).required(),
     companyId: Joi.string().custom(objectId).required(),
     buildingId: Joi.string().custom(objectId).required(),
-    accessType: Joi.string().required().valid('login', 'logout', 'access'),
+    eventType: Joi.string().required().valid('login', 'logout', 'access'),
     resource: Joi.array().items(Joi.string()).optional(),
 }
 

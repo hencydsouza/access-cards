@@ -7,7 +7,8 @@ const createAccessLogBody: Record<keyof NewCreatedAccessLog, any> = {
     companyId: Joi.string().custom(objectId).required(),
     buildingId: Joi.string().custom(objectId).required(),
     accessType: Joi.string().required().valid('login', 'logout', 'access'),
-    // resource: Joi.string().required(),
+    eventType: Joi.string().required().valid('company', 'building'),
+    resource: Joi.string().required(),
     timestamp: Joi.date().optional()
 }
 

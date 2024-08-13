@@ -115,8 +115,9 @@ components:
           type: string
         buildingId: 
           type: string
-        accessType: 
+        eventType: 
           type: string
+          enum: ['login','read', 'access']
         resource: 
           type: array
           items:
@@ -125,7 +126,7 @@ components:
         accessCardId: '66b9d489fc714e07094d6dbd'
         companyId: '66b9bb32c6628e6d3a605eda'
         buildingId: '66b9bb2cc6628e6d3a605ed5'
-        accessType: 'login'
+        eventType: 'login'
         resource: ['company']
 
     AccessLog:
@@ -137,15 +138,20 @@ components:
           type: string
         buildingId:
           type: string
-        accessType:
+        eventType:
           type: string
+          enum: ['login','logout','access']
+        accessType: 
+          type: string
+          enum: ['company','building']
         timestamp:
           type: string
       example:
         accessCardId: '66b9d489fc714e07094d6dbd'
         companyId: '66b9bb32c6628e6d3a605eda'
         buildingId: '66b9bb2cc6628e6d3a605ed5'
-        accessType: 'login'
+        eventType: 'login'
+        accessType: 'company'
 
   #   User:
   #     type: object

@@ -37,15 +37,20 @@ const accessLogSchema = new mongoose.Schema<IAccessLogDoc, IAccessLogModel>({
             required: true,
             index: true
         },
-        accessType: {
+        eventType: {
             type: String,
             enum: ['login', 'logout', 'access'],
             required: true,
         },
-        // resource: {
-        //     type: String,
-        //     required: true,
-        // },
+        accessType: {
+            type: String,
+            enum: ['building', 'company'],
+            required: true,
+        },
+        resource: [{
+            type: String,
+            required: true,
+        }],
         timestamp: {
             type: Date,
             required: true,

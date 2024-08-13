@@ -42,7 +42,9 @@ export const createAccessLog = async (accessLogBody: NewCreatedAccessLog): Promi
             employeeId: accessCard.cardHolder.employeeId,
             companyId: accessLogBody.companyId,
             buildingId: accessLogBody.buildingId,
+            eventType: accessLogBody.eventType,
             accessType: accessLogBody.accessType,
+            resource: accessLogBody.resource,
             timestamp: accessLogBody.timestamp || logTime
         }
         await lastAccessLog.updateOne({ $push: { logs: log } })
@@ -60,8 +62,9 @@ export const createAccessLog = async (accessLogBody: NewCreatedAccessLog): Promi
                 employeeId: accessCard.cardHolder.employeeId,
                 companyId: accessLogBody.companyId,
                 buildingId: accessLogBody.buildingId,
+                eventType: accessLogBody.eventType,
                 accessType: accessLogBody.accessType,
-                // resource: accessLogBody.resource,
+                resource: accessLogBody.resource,
                 timestamp: accessLogBody.timestamp || Date.now()
             }]
         })

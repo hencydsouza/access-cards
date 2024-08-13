@@ -61,6 +61,8 @@ export const accessService = async (accessBody: IAccess): Promise<string | IAcce
     const employeeBelongsToBuilding = employee.company.buildingId.toString() === accessBody.buildingId.toString()
     const employeeBelongsToCompany = employee.company.companyId.toString() === accessBody.companyId.toString()
 
+    let accessType = 0
+
     // Check if the employee belongs to the building or if their company owns the building
     if (!employeeBelongsToBuilding && !employeeCompanyOwnsBuilding) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Employee does not have access to this building');
@@ -87,6 +89,7 @@ export const accessService = async (accessBody: IAccess): Promise<string | IAcce
             }
 
             console.log('Company permissions:', permissionArray[0])
+            accessType = 0
         } else {
             // hasRequiredPermission = true;
             throw new ApiError(httpStatus.BAD_REQUEST, 'Permissions do not match or are missing');
@@ -108,6 +111,7 @@ export const accessService = async (accessBody: IAccess): Promise<string | IAcce
             }
 
             console.log('building permissions:', permissionArray[1])
+            accessType = 1
         } else {
             // hasRequiredPermission = true;
             throw new ApiError(httpStatus.BAD_REQUEST, 'Permissions do not match or are missing');
@@ -130,13 +134,17 @@ export const accessService = async (accessBody: IAccess): Promise<string | IAcce
         accessCardId: accessCard._id,
         buildingId: accessBody.buildingId,
         companyId: accessBody.companyId,
-        accessType: accessBody.accessType,
+        accessType: accessType == 0 ? 'company' : 'building',
+        eventType: accessBody.eventType,
+        resource: accessBody.resource,
         timestamp: new Date(),
     }) : null;
 
     if (!accessLog) {
         throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Failed to create access log');
     }
+
+    // console.log('accessLog:', accessLog)
 
     return permissionArray.length > 0 ? `Access to ${accessBody.resource} granted` : accessLog;
 };
