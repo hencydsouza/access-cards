@@ -6,7 +6,7 @@ import { Employee } from "../employee";
 import { createAccessLog } from "../accessLog/accessLog.service";
 import { Company } from "../company";
 import { IEmployeeDoc } from "../employee/employee.interfaces";
-import { AccessLevel } from "../accessLevel";
+// import { AccessLevel } from "../accessLevel";
 import { IAccessLog } from "../accessLog/accessLog.interfaces";
 
 export const accessService = async (accessBody: IAccess): Promise<string | IAccessLog> => {
@@ -36,23 +36,33 @@ export const accessService = async (accessBody: IAccess): Promise<string | IAcce
             permissions: []
         }
     ]
+    // if (accessBody.resource) {
+    //     await Promise.all(employee.accessLevels.map(async (permission) => {
+    //         const permissionExists = await AccessLevel.findOne({ name: permission.accessLevel })
+    //         if (!permissionExists) {
+    //             throw new ApiError(httpStatus.NOT_FOUND, 'Permission not found')
+    //         }
+
+    //         // console.log(permissionExists)
+
+    //         if (permissionExists.type === 'company') {
+    //             permissionArray[0]?.permissions.push(...permissionExists.permissions)
+    //         } else if (permissionExists.type === 'building') {
+    //             permissionArray[1]?.permissions.push(...permissionExists.permissions)
+    //         }
+
+    //         // permissionArray.push(...permissionExists.permissions)
+    //     }))
+    // }
+
     if (accessBody.resource) {
-        await Promise.all(employee.accessLevels.map(async (permission) => {
-            const permissionExists = await AccessLevel.findOne({ name: permission.accessLevel })
-            if (!permissionExists) {
-                throw new ApiError(httpStatus.NOT_FOUND, 'Permission not found')
+        employee.permissions?.map(permission => {
+            if (permission.type === 'company') {
+                permissionArray[0]?.permissions.push(permission)
+            } else if (permission.type === 'building') {
+                permissionArray[1]?.permissions.push(permission)
             }
-
-            // console.log(permissionExists)
-
-            if (permissionExists.type === 'company') {
-                permissionArray[0]?.permissions.push(...permissionExists.permissions)
-            } else if (permissionExists.type === 'building') {
-                permissionArray[1]?.permissions.push(...permissionExists.permissions)
-            }
-
-            // permissionArray.push(...permissionExists.permissions)
-        }))
+        })
     }
 
     // console.log(permissionArray)
@@ -80,7 +90,7 @@ export const accessService = async (accessBody: IAccess): Promise<string | IAcce
         if (accessBody.resource && accessBody.resource.length > 0) {
             hasRequiredPermission = accessBody.resource.every((reqPermission: string) =>
                 permissionArray[0]?.permissions.some((permission: { resource: string; action: string }) =>
-                    permission.resource === reqPermission && permission.action === 'access'
+                    permission.resource === reqPermission && (permission.action === 'access' || permission.action === 'manage')
                 )
             );
 
