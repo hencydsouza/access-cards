@@ -55,7 +55,16 @@ const employeeSchema = new mongoose.Schema<IEmployeeDoc, IEmployeeModel>({
             required: false,
         },
     }],
-
+    permissions: [
+        {
+            resource: {
+                type: String
+            },
+            action: {
+                type: String
+            }
+        }
+    ]
 }, { timestamps: true })
 
 employeeSchema.plugin(toJSON);

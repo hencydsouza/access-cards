@@ -49,6 +49,7 @@ export const createEmployee = async (employeeBody: NewCreatedEmployee): Promise<
     }
 
     const employee = await Employee.create(employeeBody);
+    refreshPermissions(employee._id)
     return employee;
 };
 
@@ -104,6 +105,7 @@ export const updateEmployeeById = async (
 
     Object.assign(employee, updateBody);
     await employee.save();
+    refreshPermissions(employee._id)
     return employee;
 };
 
@@ -118,3 +120,53 @@ export const deleteEmployeeById = async (employeeId: mongoose.Types.ObjectId): P
     await employee.deleteOne();
     return employee;
 };
+
+export const refreshPermissions = async (employeeId: mongoose.Types.ObjectId): Promise<IEmployeeDoc | null> => {
+    const employee = await getEmployeeById(employeeId);
+    if (!employee) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Employee not found');
+    }
+
+    const permissions = await Employee.aggregate([
+        {
+            '$match': {
+                '_id': new mongoose.Types.ObjectId(employee._id)
+            }
+        }, {
+            '$lookup': {
+                'from': 'accesslevels',
+                'localField': 'accessLevels.accessLevel',
+                'foreignField': 'name',
+                'pipeline': [
+                    {
+                        '$project': {
+                            'permissions': 1
+                        }
+                    }, {
+                        '$unwind': '$permissions'
+                    }, {
+                        '$project': {
+                            '_id': '$permissions._id',
+                            'resource': '$permissions.resource',
+                            'action': '$permissions.action'
+                        }
+                    }
+                ],
+                'as': 'permissions'
+            }
+        }, {
+            '$project': {
+                '_id': 0,
+                'permissions': 1
+            }
+        }
+    ])
+
+    if (permissions) {
+        employee.permissions = permissions[0].permissions
+    }
+
+    await employee.save()
+
+    return employee
+}

@@ -43,3 +43,10 @@ export const deleteEmployee = catchAsync(async (req: Request, res: Response<null
         res.status(httpStatus.NO_CONTENT).send();
     }
 });
+
+export const refreshEmployeePermissions = catchAsync(async (req: Request, res: Response) => {
+    if (typeof req.params['employeeId'] === 'string') {
+        await employeeService.refreshPermissions(new mongoose.Types.ObjectId(req.params['employeeId']));
+        res.status(httpStatus.NO_CONTENT).send();
+    }
+})
