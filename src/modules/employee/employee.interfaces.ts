@@ -18,7 +18,7 @@ export interface IEmployee {
 
 export interface IEmployeeDoc extends IEmployee, Document {
     isPasswordMatch(password: string): Promise<boolean>;
-    permissions?: { resource: string, action: string }[]
+    permissions?: { resource: string, action: string, type: string }[]
 }
 
 export interface IEmployeeModel extends Model<IEmployeeDoc> {
