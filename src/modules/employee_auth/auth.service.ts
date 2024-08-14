@@ -6,11 +6,17 @@ import { Token, tokenTypes } from "../employee_token";
 import mongoose from "mongoose";
 import { generateAuthTokens, verifyToken } from "../employee_token/token.service";
 
-export const loginEmployeeWithEmailAndPassword = async (email: string, password: string): Promise<IEmployeeDoc> => {
+export const loginEmployeeWithEmailAndPassword = async (email: string, password: string, resource: string): Promise<IEmployeeDoc> => {
     const employee = await getEmployeeByEmail(email);
     if (!employee || !(await employee.isPasswordMatch(password))) {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
     }
+
+    const checkPermission = employee.permissions?.find((permission) => (permission.resource === resource) && (permission.action === 'admin'));
+    if (!checkPermission) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, 'Permission denied');
+    }
+
     return employee;
 };
 

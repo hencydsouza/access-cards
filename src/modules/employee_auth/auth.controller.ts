@@ -5,8 +5,8 @@ import { tokenService } from '../employee_token';
 import httpStatus from 'http-status';
 
 export const login = catchAsync(async (req: Request, res: Response) => {
-    const { email, password } = req.body;
-    const employee = await authService.loginEmployeeWithEmailAndPassword(email, password);
+    const { email, password, resource } = req.body;
+    const employee = await authService.loginEmployeeWithEmailAndPassword(email, password, resource);
     const tokens = await tokenService.generateAuthTokens(employee);
     res.send({ employee, tokens });
     // res.send({ message: `Logged in as ${employee.name}`, employee });
