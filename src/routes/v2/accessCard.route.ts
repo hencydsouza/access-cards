@@ -1,17 +1,18 @@
 import express, { Router } from 'express'
 import { validate } from '../../modules/validate';
 import { accessCardController, accessCardValidation } from '../../modules/accessCard';
+import authMiddleware from '../../modules/employee_auth/auth.middleware';
 
 const router: Router = express.Router();
 
 router.route('/')
-    .post(validate(accessCardValidation.createAccessCard), accessCardController.createAccessCard)
-    .get(validate(accessCardValidation.getAccessCards), accessCardController.getAccessCards);
+    .post(authMiddleware(['company', 'building', 'product']), validate(accessCardValidation.createAccessCard), accessCardController.createAccessCard)
+    .get(authMiddleware(['company', 'building', 'product']), validate(accessCardValidation.getAccessCards), accessCardController.getAccessCards);
 
 router.route('/:accessCardId')
-    .get(validate(accessCardValidation.getAccessCard), accessCardController.getAccessCard)
-    .patch(validate(accessCardValidation.updateAccessCard), accessCardController.updateAccessCard)
-    .delete(validate(accessCardValidation.deleteAccessCard), accessCardController.deleteAccessCard)
+    .get(authMiddleware(['company', 'building', 'product']), validate(accessCardValidation.getAccessCard), accessCardController.getAccessCard)
+    .patch(authMiddleware(['company', 'building', 'product']), validate(accessCardValidation.updateAccessCard), accessCardController.updateAccessCard)
+    .delete(authMiddleware(['company', 'building', 'product']), validate(accessCardValidation.deleteAccessCard), accessCardController.deleteAccessCard)
 
 export default router
 

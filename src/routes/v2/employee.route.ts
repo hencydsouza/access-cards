@@ -1,17 +1,18 @@
 import express, { Router } from 'express'
 import { validate } from '../../modules/validate';
 import { employeeValidation, employeeController } from '../../modules/employee';
+import authMiddleware from '../../modules/employee_auth/auth.middleware';
 
 const router: Router = express.Router();
 
 router.route('/')
-    .post(validate(employeeValidation.createEmployee), employeeController.createEmployee)
-    .get(validate(employeeValidation.getEmployees), employeeController.getEmployees);
+    .post(authMiddleware(['company', 'building', 'product']), validate(employeeValidation.createEmployee), employeeController.createEmployee)
+    .get(authMiddleware(['company', 'building', 'product']), validate(employeeValidation.getEmployees), employeeController.getEmployees);
 
 router.route('/:employeeId')
-    .get(validate(employeeValidation.getEmployee), employeeController.getEmployee)
-    .patch(validate(employeeValidation.updateEmployee), employeeController.updateEmployee)
-    .delete(validate(employeeValidation.deleteEmployee), employeeController.deleteEmployee)
+    .get(authMiddleware(['company', 'building', 'product']), validate(employeeValidation.getEmployee), employeeController.getEmployee)
+    .patch(authMiddleware(['company', 'building', 'product']), validate(employeeValidation.updateEmployee), employeeController.updateEmployee)
+    .delete(authMiddleware(['company', 'building', 'product']), validate(employeeValidation.deleteEmployee), employeeController.deleteEmployee)
 
 export default router
 

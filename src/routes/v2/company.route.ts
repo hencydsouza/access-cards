@@ -1,17 +1,18 @@
 import express, { Router } from 'express'
 import { validate } from '../../modules/validate';
 import { companyValidation, companyController } from '../../modules/company';
+import authMiddleware from '../../modules/employee_auth/auth.middleware';
 
 const router: Router = express.Router();
 
 router.route('/')
-    .post(validate(companyValidation.createCompany), companyController.createCompany)
-    .get(validate(companyValidation.getCompanies), companyController.getCompanies);
+    .post(authMiddleware(['product']), validate(companyValidation.createCompany), companyController.createCompany)
+    .get(authMiddleware(['product', 'building']), validate(companyValidation.getCompanies), companyController.getCompanies);
 
 router.route('/:companyId')
-    .get(validate(companyValidation.getCompany), companyController.getCompany)
-    .patch(validate(companyValidation.updateCompany), companyController.updateCompany)
-    .delete(validate(companyValidation.deleteCompany), companyController.deleteCompany)
+    .get(authMiddleware(['product', 'building', 'company']), validate(companyValidation.getCompany), companyController.getCompany)
+    .patch(authMiddleware(['product', 'building', 'company']), validate(companyValidation.updateCompany), companyController.updateCompany)
+    .delete(authMiddleware(['product']), validate(companyValidation.deleteCompany), companyController.deleteCompany)
 
 export default router
 

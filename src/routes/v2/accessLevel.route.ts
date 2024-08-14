@@ -1,21 +1,22 @@
 import express, { Router } from 'express'
 import { validate } from '../../modules/validate';
 import { accessLevelController, accessLevelValidation } from '../../modules/accessLevel';
+import authMiddleware from '../../modules/employee_auth/auth.middleware';
 
 const router: Router = express.Router();
 
 router.route('/')
-    .post(validate(accessLevelValidation.createAccessLevel), accessLevelController.createAccessLevel)
-    .get(validate(accessLevelValidation.getAccessLevels), accessLevelController.getAccessLevels);
+    .post(authMiddleware(['building','product']), validate(accessLevelValidation.createAccessLevel), accessLevelController.createAccessLevel)
+    .get(authMiddleware(['company', 'building','product']), validate(accessLevelValidation.getAccessLevels), accessLevelController.getAccessLevels);
 
 router.route('/add-permission/:accessLevelId')
-    .patch(validate(accessLevelValidation.addPermission), accessLevelController.addPermissionToAccessLevel)
-    .delete(validate(accessLevelValidation.removePermission), accessLevelController.removePermissionFromAccessLevel)
+    .patch(authMiddleware(['building','product']), validate(accessLevelValidation.addPermission), accessLevelController.addPermissionToAccessLevel)
+    .delete(authMiddleware(['building','product']), validate(accessLevelValidation.removePermission), accessLevelController.removePermissionFromAccessLevel)
 
 router.route('/:accessLevelId')
-    .get(validate(accessLevelValidation.getAccessLevel), accessLevelController.getAccessLevel)
-    .patch(validate(accessLevelValidation.updateAccessLevel), accessLevelController.updateAccessLevel)
-    .delete(validate(accessLevelValidation.deleteAccessLevel), accessLevelController.deleteAccessLevel)
+    .get(authMiddleware(['company', 'building','product']), validate(accessLevelValidation.getAccessLevel), accessLevelController.getAccessLevel)
+    .patch(authMiddleware(['building','product']), validate(accessLevelValidation.updateAccessLevel), accessLevelController.updateAccessLevel)
+    .delete(authMiddleware(['building','product']), validate(accessLevelValidation.deleteAccessLevel), accessLevelController.deleteAccessLevel)
 
 export default router
 
