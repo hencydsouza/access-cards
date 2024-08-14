@@ -9,11 +9,17 @@ import * as buildingService from './building.service'
 import { IBuildingDoc } from './building.interfaces';
 
 export const createBuilding = catchAsync(async (req: Request, res: Response<IBuildingDoc>) => {
+    if (req.scope == 'company' || req.scope == 'building') {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Cannot create building')
+    }
     const building = await buildingService.createBuilding(req.body);
     res.status(httpStatus.CREATED).json(building);
 });
 
 export const getBuildings = catchAsync(async (req: Request, res: Response) => {
+    if (req.scope == 'company' || req.scope == 'building') {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Cannot get buildings')
+    }
     const filter = pick(req.query, ['name', 'address']);
     const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
     const result = await buildingService.queryBuildings(filter, options);
@@ -22,6 +28,9 @@ export const getBuildings = catchAsync(async (req: Request, res: Response) => {
 
 export const getBuilding = catchAsync(async (req: Request, res: Response<IBuildingDoc>) => {
     if (typeof req.params['buildingId'] === 'string') {
+        if (req.scope == 'company' || req.scope == 'building') {
+            throw new ApiError(httpStatus.FORBIDDEN, 'Cannot get building')
+        }
         const building = await buildingService.getBuildingById(new mongoose.Types.ObjectId(req.params['buildingId']));
         if (!building) {
             throw new ApiError(httpStatus.NOT_FOUND, 'Building not found');
@@ -32,6 +41,9 @@ export const getBuilding = catchAsync(async (req: Request, res: Response<IBuildi
 
 export const updateBuilding = catchAsync(async (req: Request, res: Response<IBuildingDoc | null>) => {
     if (typeof req.params['buildingId'] === 'string') {
+        if (req.scope == 'company' || req.scope == 'building') {
+            throw new ApiError(httpStatus.FORBIDDEN, 'Cannot update building')
+        }
         const building = await buildingService.updateBuildingById(new mongoose.Types.ObjectId(req.params['buildingId']), req.body);
         res.send(building);
     }
@@ -39,6 +51,9 @@ export const updateBuilding = catchAsync(async (req: Request, res: Response<IBui
 
 export const deleteBuilding = catchAsync(async (req: Request, res: Response<null>) => {
     if (typeof req.params['buildingId'] === 'string') {
+        if (req.scope == 'company' || req.scope == 'building') {
+            throw new ApiError(httpStatus.FORBIDDEN, 'Cannot delete building')
+        }
         await buildingService.deleteBuildingById(new mongoose.Types.ObjectId(req.params['buildingId']));
         res.status(httpStatus.NO_CONTENT).send();
     }
