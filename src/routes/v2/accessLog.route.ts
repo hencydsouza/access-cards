@@ -6,8 +6,8 @@ import authMiddleware from '../../modules/employee_auth/auth.middleware';
 const router: Router = express.Router();
 
 router.route('/')
-    .post(authMiddleware(['company', 'building']), validate(accessLogValidation.createAccessLog), accessLogController.createAccessLog)
-    .get(authMiddleware(['company', 'building']), validate(accessLogValidation.getAccessLogs), accessLogController.getAccessLogs);
+    .post(authMiddleware(['company', 'building', 'product']), validate(accessLogValidation.createAccessLog), accessLogController.createAccessLog)
+    .get(authMiddleware(['company', 'building', 'product']), validate(accessLogValidation.getAccessLogs), accessLogController.getAccessLogs);
 
 router.route('/reConfigureAccessLogs/')
     .get(authMiddleware(['product']), accessLogController.reConfigureAccessLogsController)
@@ -16,8 +16,8 @@ router.route('/reConfigureAccessLogs/:accessLogInterval')
     .get(authMiddleware(['product']), accessLogController.reConfigureAccessLogsByValue)
 
 router.route('/:accessLogId')
-    .get(authMiddleware(['company', 'building']), validate(accessLogValidation.getAccessLog), accessLogController.getAccessLog)
-    .delete(authMiddleware(['company', 'building']), validate(accessLogValidation.deleteAccessLog), accessLogController.deleteAccessLog)
+    .get(authMiddleware(['company', 'building', 'product']), validate(accessLogValidation.getAccessLog), accessLogController.getAccessLog)
+    .delete(authMiddleware(['company', 'building', 'product']), validate(accessLogValidation.deleteAccessLog), accessLogController.deleteAccessLog)
 
 export default router
 

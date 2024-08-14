@@ -7,7 +7,7 @@ const router: Router = express.Router();
 
 router.route('/')
     .post(authMiddleware(['product']), validate(companyValidation.createCompany), companyController.createCompany)
-    .get(authMiddleware(['product', 'building']), validate(companyValidation.getCompanies), companyController.getCompanies);
+    .get(authMiddleware(['product', 'building', 'company']), validate(companyValidation.getCompanies), companyController.getCompanies);
 
 router.route('/:companyId')
     .get(authMiddleware(['product', 'building', 'company']), validate(companyValidation.getCompany), companyController.getCompany)

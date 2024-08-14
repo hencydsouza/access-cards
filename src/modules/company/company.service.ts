@@ -6,6 +6,7 @@ import { IOptions, QueryResult } from '../paginate/paginate';
 import { ICompanyDoc, NewCreatedCompany, UpdateCompanyBody } from "./company.interfaces";
 import { Building } from "../building";
 import { Employee } from "../employee";
+import { IEmployeeDoc } from "../employee/employee.interfaces";
 
 /**
  * Create a new company in the system.
@@ -71,11 +72,20 @@ export const getCompanyById = async (companyId: mongoose.Types.ObjectId): Promis
  */
 export const updateCompanyById = async (
     companyId: mongoose.Types.ObjectId,
-    updateBody: UpdateCompanyBody
+    updateBody: UpdateCompanyBody,
+    scope: string,
+    client: IEmployeeDoc
 ): Promise<ICompanyDoc | null> => {
     const company = await getCompanyById(companyId);
     if (!company) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Company not found');
+    }
+
+    if (scope === 'company' && company._id.toString() !== client.company.companyId.toString()) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Cannot update company');
+    }
+    if (scope === 'building' && company.buildings.buildingId.toString() !== client.company.buildingId.toString()) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Cannot update company');
     }
 
     if (updateBody.name && (await Company.isNameTaken(updateBody.name, companyId))) {
@@ -119,10 +129,21 @@ export const updateCompanyById = async (
  * @param {mongoose.Types.ObjectId} companyId
  * @returns {Promise<ICompanyDoc | null>}
  */
-export const deleteCompanyById = async (companyId: mongoose.Types.ObjectId): Promise<ICompanyDoc | null> => {
+export const deleteCompanyById = async (
+    companyId: mongoose.Types.ObjectId,
+    scope: string,
+    client: IEmployeeDoc
+): Promise<ICompanyDoc | null> => {
     const company = await getCompanyById(companyId);
     if (!company) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Company not found');
+    }
+
+    if (scope === 'company' && company._id.toString() !== client.company.companyId.toString()) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Cannot delete company');
+    }
+    if (scope === 'building' && company.buildings.buildingId.toString() !== client.company.buildingId.toString()) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Cannot delete company');
     }
 
     // if (company.ownedBuildings && company.ownedBuildings.length > 0) {
