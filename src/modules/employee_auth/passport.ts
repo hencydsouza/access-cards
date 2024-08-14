@@ -15,10 +15,11 @@ const jwtStrategy = new JwtStrategy(
         throw new Error('Invalid token type');
       }
       const employee = await Employee.findById(payload.sub);
+      const resource = payload.scope
       if (!employee) {
         return done(null, false);
       }
-      done(null, employee);
+      done(null, employee, resource);
     } catch (error) {
       done(error, false);
     }

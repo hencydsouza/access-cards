@@ -7,7 +7,7 @@ import passport from 'passport';
 // import mongoose from "mongoose";
 
 
-const verifyCallback = (req: Request, resolve: any, reject: any, requiredPermissions: string[]) => async (err: Error, employee: IEmployeeDoc, info: string) => {
+const verifyCallback = (req: Request, resolve: any, reject: any, requiredPermissions: string[]) => async (err: Error, employee: IEmployeeDoc, scope: string, info: string) => {
     if (err || info || !employee) {
         return reject(new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate'));
     }
@@ -49,6 +49,7 @@ const verifyCallback = (req: Request, resolve: any, reject: any, requiredPermiss
 
     // employee.permissions = permissions[0].permissions
     req.employee = employee;
+    req.scope = scope;
 
     // console.log(requiredPermissions)
     // console.log(employee)
@@ -57,10 +58,10 @@ const verifyCallback = (req: Request, resolve: any, reject: any, requiredPermiss
     if (requiredPermissions.length) {
         if (!employee.permissions) return reject(new ApiError(httpStatus.FORBIDDEN, 'Forbidden'))
 
-        const hasRequiredPermissions = requiredPermissions.every((reqPermission: string) =>
+        const hasRequiredPermissions = requiredPermissions.some((reqPermission: string) =>
             employee.permissions?.some((permission: { resource: string; action: string }) =>
                 // permission.resource === reqPermission && permission.action === 'access'
-                permission.resource === reqPermission
+                permission.resource === reqPermission && permission.action === 'admin'
             )
         );
 
@@ -72,7 +73,7 @@ const verifyCallback = (req: Request, resolve: any, reject: any, requiredPermiss
     resolve();
 };
 
-const authMiddleware = (...requiredPermissions: string[]) =>
+const authMiddleware = (requiredPermissions: string[]) =>
     async (req: Request, res: Response, next: NextFunction) =>
         new Promise<void>((resolve, reject) => {
             passport.authenticate('jwt', { session: false }, verifyCallback(req, resolve, reject, requiredPermissions))(req, res, next);

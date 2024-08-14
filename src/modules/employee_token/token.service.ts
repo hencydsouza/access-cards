@@ -13,6 +13,7 @@ import { employeeService } from "../employee";
 export const generateToken = (
     employeeId: mongoose.Types.ObjectId,
     expires: Moment,
+    scope: string,
     type: string,
     secret: string = config.jwt.secret
 ): string => {
@@ -20,6 +21,7 @@ export const generateToken = (
         sub: employeeId,
         iat: moment().unix(),
         exp: expires.unix(),
+        scope: scope,
         type,
     };
     return jwt.sign(payload, secret);
@@ -29,6 +31,7 @@ export const saveToken = async (
     token: string,
     employeeId: mongoose.Types.ObjectId,
     expires: Moment,
+    scope: string,
     type: string,
     blacklisted: boolean = false
 ): Promise<ITokenDoc> => {
@@ -36,6 +39,7 @@ export const saveToken = async (
         token,
         employee: employeeId,
         expires: expires.toDate(),
+        scope,
         type,
         blacklisted,
     });
@@ -59,13 +63,13 @@ export const verifyToken = async (token: string, type: string): Promise<ITokenDo
     return tokenDoc;
 };
 
-export const generateAuthTokens = async (employee: IEmployeeDoc): Promise<AccessAndRefreshTokens> => {
+export const generateAuthTokens = async (employee: IEmployeeDoc, scope: string): Promise<AccessAndRefreshTokens> => {
     const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'minutes');
-    const accessToken = generateToken(employee.id, accessTokenExpires, tokenTypes.ACCESS);
+    const accessToken = generateToken(employee.id, accessTokenExpires, scope, tokenTypes.ACCESS);
 
     const refreshTokenExpires = moment().add(config.jwt.refreshExpirationDays, 'days');
-    const refreshToken = generateToken(employee.id, refreshTokenExpires, tokenTypes.REFRESH);
-    await saveToken(refreshToken, employee.id, refreshTokenExpires, tokenTypes.REFRESH);
+    const refreshToken = generateToken(employee.id, refreshTokenExpires, scope, tokenTypes.REFRESH);
+    await saveToken(refreshToken, employee.id, refreshTokenExpires, scope, tokenTypes.REFRESH);
 
     return {
         access: {
@@ -85,8 +89,8 @@ export const generateResetPasswordToken = async (email: string): Promise<string>
         throw new ApiError(httpStatus.NO_CONTENT, '');
     }
     const expires = moment().add(config.jwt.resetPasswordExpirationMinutes, 'minutes');
-    const resetPasswordToken = generateToken(employee.id, expires, tokenTypes.RESET_PASSWORD);
-    await saveToken(resetPasswordToken, employee.id, expires, tokenTypes.RESET_PASSWORD);
+    const resetPasswordToken = generateToken(employee.id, expires, 'password', tokenTypes.RESET_PASSWORD);
+    await saveToken(resetPasswordToken, employee.id, expires, 'password', tokenTypes.RESET_PASSWORD);
     return resetPasswordToken;
 };
 

@@ -7,7 +7,7 @@ import httpStatus from 'http-status';
 export const login = catchAsync(async (req: Request, res: Response) => {
     const { email, password, resource } = req.body;
     const employee = await authService.loginEmployeeWithEmailAndPassword(email, password, resource);
-    const tokens = await tokenService.generateAuthTokens(employee);
+    const tokens = await tokenService.generateAuthTokens(employee, resource);
     res.send({ employee, tokens });
     // res.send({ message: `Logged in as ${employee.name}`, employee });
 });

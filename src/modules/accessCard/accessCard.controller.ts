@@ -19,6 +19,7 @@ export const createAccessCard = catchAsync(async (req: Request, res: Response<IA
 // "totalResults": 5
 
 export const getAccessCards = catchAsync(async (req: Request, res: Response) => {
+    console.log(req.scope)
     const filter = pick(req.query, ['name', 'address']);
     const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
     const result = await accessCardService.queryAccessCards(filter, options);

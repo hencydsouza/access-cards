@@ -17,6 +17,8 @@ export const loginEmployeeWithEmailAndPassword = async (email: string, password:
         throw new ApiError(httpStatus.UNAUTHORIZED, 'Permission denied');
     }
 
+    // sessionStorage.setItem('clientType', JSON.stringify(resource));
+
     return employee;
 };
 
@@ -36,7 +38,7 @@ export const refreshAuth = async (refreshToken: string): Promise<IEmployeeWithTo
             throw new Error();
         }
         await refreshTokenDoc.deleteOne();
-        const tokens = await generateAuthTokens(employee);
+        const tokens = await generateAuthTokens(employee, refreshTokenDoc.scope);
         return { employee, tokens };
     } catch (error) {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate');

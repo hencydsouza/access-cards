@@ -7,6 +7,7 @@ export interface IToken {
     employee: string;
     type: string;
     expires: Date;
+    scope: string;
     blacklisted: boolean;
 }
 
@@ -20,6 +21,7 @@ export interface IPayload extends JwtPayload {
     sub: string;
     iat: number;
     exp: number;
+    scope: string;
     type: string;
 }
 
