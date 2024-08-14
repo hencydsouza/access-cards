@@ -52,7 +52,7 @@ export const resetPassword = async (resetPasswordToken: any, newPassword: string
         if (!employee) {
             throw new Error();
         }
-        await updateEmployeeById(employee.id, { password: newPassword });
+        await updateEmployeeById(employee.id, { password: newPassword },null,null);
         await Token.deleteMany({ employee: employee.id, type: tokenTypes.RESET_PASSWORD });
     } catch (error) {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'Password reset failed');

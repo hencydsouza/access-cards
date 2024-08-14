@@ -9,7 +9,7 @@ import { Company } from "../company";
 import { AccessLevel } from "../accessLevel";
 // import { Building } from "../building";
 
-export const createEmployee = async (employeeBody: NewCreatedEmployee): Promise<IEmployeeDoc> => {
+export const createEmployee = async (employeeBody: NewCreatedEmployee, scope: string, client: IEmployeeDoc): Promise<IEmployeeDoc> => {
     if (await Employee.isEmailTaken(employeeBody.email)) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
     }
@@ -26,6 +26,13 @@ export const createEmployee = async (employeeBody: NewCreatedEmployee): Promise<
     employeeBody.company = {
         companyId: targetCompany._id,
         buildingId: targetBuilding._id
+    }
+
+    if (scope === 'company' && client.company.companyId.toString() !== targetCompany._id.toString()) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Cannot create employee for another company');
+    }
+    if (scope === 'building' && client.company.buildingId.toString() !== targetBuilding._id.toString()) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Cannot create employee for another building');
     }
 
     // let duplicateEmployee = await Employee.findOne({ name: employeeBody.name, 'company.companyId': employeeBody.company.companyId });
@@ -65,11 +72,20 @@ export const getEmployeeByEmail = async (email: string): Promise<IEmployeeDoc | 
 
 export const updateEmployeeById = async (
     employeeId: mongoose.Types.ObjectId,
-    updateBody: UpdateEmployeeBody
+    updateBody: UpdateEmployeeBody,
+    scope: string | null,
+    client: IEmployeeDoc | null,
 ): Promise<IEmployeeDoc | null> => {
     const employee = await getEmployeeById(employeeId);
     if (!employee) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Employee not found');
+    }
+
+    if (scope === 'company' && client?.company.companyId.toString() !== employee.company.companyId.toString()) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Cannot update employee from another company');
+    }
+    if (scope === 'building' && client?.company.buildingId.toString() !== employee.company.buildingId.toString()) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Cannot update employee from another building');
     }
 
     if (updateBody.companyName) {
@@ -109,10 +125,17 @@ export const updateEmployeeById = async (
     return employee;
 };
 
-export const deleteEmployeeById = async (employeeId: mongoose.Types.ObjectId): Promise<IEmployeeDoc | null> => {
+export const deleteEmployeeById = async (employeeId: mongoose.Types.ObjectId, scope: string, client: IEmployeeDoc): Promise<IEmployeeDoc | null> => {
     const employee = await getEmployeeById(employeeId);
     if (!employee) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Employee not found');
+    }
+
+    if (scope === 'company' && client.company.companyId.toString() !== employee.company.companyId.toString()) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Cannot delete employee from another company');
+    }
+    if (scope === 'building' && client.company.buildingId.toString() !== employee.company.buildingId.toString()) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Cannot delete employee from another building');
     }
 
     // TODO: implement access card and access level logic
