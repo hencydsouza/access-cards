@@ -6,6 +6,7 @@ import { IOptions, QueryResult } from '../paginate/paginate';
 import { IAccessCardDoc, NewCreatedAccessCard, UpdateAccessCardBody } from "./accessCard.interfaces";
 import { Employee } from "../employee";
 import { Company } from "../company";
+import { IEmployeeDoc } from "../employee/employee.interfaces";
 
 export const createAccessCard = async (accessCardBody: NewCreatedAccessCard): Promise<IAccessCardDoc> => {
     if (accessCardBody.cardNumber && await AccessCard.findOne({ cardNumber: accessCardBody.cardNumber })) {
@@ -29,7 +30,9 @@ export const createAccessCard = async (accessCardBody: NewCreatedAccessCard): Pr
     const accessCardObject = {
         cardNumber: accessCardBody.cardNumber ? accessCardBody.cardNumber : (await Company.findById(employee.company.companyId))?.name.toUpperCase() + '-' + employee.name.split(' ')[0]?.toUpperCase(),
         cardHolder: {
-            employeeId: accessCardBody.cardHolder.employeeId
+            employeeId: accessCardBody.cardHolder.employeeId,
+            companyId: employee.company.companyId,
+            buildingId: employee.company.buildingId
         },
         issued_at: accessCardBody.issued_at || new Date(),
         valid_until: accessCardBody.valid_until || null,
@@ -54,11 +57,20 @@ export const getAccessCardById = async (accessCardId: mongoose.Types.ObjectId): 
 
 export const updateAccessCardById = async (
     accessCardId: mongoose.Types.ObjectId,
-    updateBody: UpdateAccessCardBody
+    updateBody: UpdateAccessCardBody,
+    scope: string,
+    client: IEmployeeDoc
 ): Promise<IAccessCardDoc | null> => {
     const accessCard = await getAccessCardById(accessCardId);
     if (!accessCard) {
         throw new ApiError(httpStatus.NOT_FOUND, 'AccessCard not found');
+    }
+
+    if (scope === 'company' && accessCard?.cardHolder.companyId.toString() !== client.company.companyId.toString()) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'AccessCard not found');
+    }
+    if (scope === 'building' && accessCard?.cardHolder.buildingId.toString() !== client.company.buildingId.toString()) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'AccessCard not found');
     }
 
     // check if card number already exists
@@ -100,10 +112,17 @@ export const updateAccessCardById = async (
     return accessCard;
 }
 
-export const deleteAccessCardById = async (accessCardId: mongoose.Types.ObjectId): Promise<IAccessCardDoc | null> => {
+export const deleteAccessCardById = async (accessCardId: mongoose.Types.ObjectId, scope: string, client: IEmployeeDoc): Promise<IAccessCardDoc | null> => {
     const accessCard = await getAccessCardById(accessCardId);
     if (!accessCard) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Access Card not found');
+    }
+
+    if (scope === 'company' && accessCard?.cardHolder.companyId.toString() !== client.company.companyId.toString()) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'AccessCard not found');
+    }
+    if (scope === 'building' && accessCard?.cardHolder.buildingId.toString() !== client.company.buildingId.toString()) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'AccessCard not found');
     }
 
     // remove access card reference in employee document

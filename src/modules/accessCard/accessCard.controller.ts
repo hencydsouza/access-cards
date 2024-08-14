@@ -1,10 +1,10 @@
 import httpStatus from 'http-status';
 import { Request, Response } from 'express';
-import mongoose from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import catchAsync from '../utils/catchAsync';
 import ApiError from '../errors/ApiError';
 import pick from '../utils/pick';
-import { IOptions } from '../paginate/paginate';
+import { IOptions, QueryResult } from '../paginate/paginate';
 import * as accessCardService from './accessCard.service'
 import { IAccessCardDoc } from './accessCard.interfaces';
 
@@ -19,10 +19,18 @@ export const createAccessCard = catchAsync(async (req: Request, res: Response<IA
 // "totalResults": 5
 
 export const getAccessCards = catchAsync(async (req: Request, res: Response) => {
-    console.log(req.scope)
+    let result: QueryResult<Document<IAccessCardDoc>>;
     const filter = pick(req.query, ['name', 'address']);
-    const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
-    const result = await accessCardService.queryAccessCards(filter, options);
+    let options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
+
+    if (req.scope === 'company') {
+        filter["cardHolder.companyId"] = req.employee.company.companyId.toString();
+    } else if (req.scope === 'building') {
+        filter["cardHolder.buildingId"] = req.employee.company.buildingId.toString();
+    }
+
+    result = await accessCardService.queryAccessCards(filter, options);
+
     res.send(result);
 });
 
@@ -32,20 +40,26 @@ export const getAccessCard = catchAsync(async (req: Request, res: Response<IAcce
         if (!accessCard) {
             throw new ApiError(httpStatus.NOT_FOUND, 'AccessCard not found');
         }
+        if (req.scope === 'company' && accessCard?.cardHolder.companyId.toString() !== req.employee.company.companyId.toString()) {
+            throw new ApiError(httpStatus.FORBIDDEN, 'AccessCard not found');
+        }
+        if (req.scope === 'building' && accessCard?.cardHolder.buildingId.toString() !== req.employee.company.buildingId.toString()) {
+            throw new ApiError(httpStatus.FORBIDDEN, 'AccessCard not found');
+        }
         res.send(accessCard);
     }
 });
 
 export const updateAccessCard = catchAsync(async (req: Request, res: Response<IAccessCardDoc | null>) => {
     if (typeof req.params['accessCardId'] === 'string') {
-        const accessCard = await accessCardService.updateAccessCardById(new mongoose.Types.ObjectId(req.params['accessCardId']), req.body);
+        const accessCard = await accessCardService.updateAccessCardById(new mongoose.Types.ObjectId(req.params['accessCardId']), req.body, req.scope, req.employee);
         res.send(accessCard);
     }
 });
 
 export const deleteAccessCard = catchAsync(async (req: Request, res: Response<null>) => {
     if (typeof req.params['accessCardId'] === 'string') {
-        await accessCardService.deleteAccessCardById(new mongoose.Types.ObjectId(req.params['accessCardId']));
+        await accessCardService.deleteAccessCardById(new mongoose.Types.ObjectId(req.params['accessCardId']), req.scope, req.employee);
         res.status(httpStatus.NO_CONTENT).send();
     }
 });

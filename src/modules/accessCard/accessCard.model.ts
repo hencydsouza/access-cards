@@ -14,6 +14,16 @@ const accessCardSchema = new mongoose.Schema<IAccessCardDoc, IAccessCardModel>({
             type: mongoose.Types.ObjectId,
             ref: 'Employee',
             required: true
+        },
+        companyId: {
+            type: mongoose.Types.ObjectId,
+            ref: 'Company',
+            required: true
+        },
+        buildingId: {
+            type: mongoose.Types.ObjectId,
+            ref: 'Building',
+            required: true
         }
     },
     issued_at: {

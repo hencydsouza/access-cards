@@ -5,6 +5,8 @@ export interface IAccessCard {
     cardNumber: string,
     cardHolder: {
         employeeId: mongoose.Types.ObjectId,
+        companyId: mongoose.Types.ObjectId,
+        buildingId: mongoose.Types.ObjectId
     }
     issued_at: Date,
     valid_until: Date,
