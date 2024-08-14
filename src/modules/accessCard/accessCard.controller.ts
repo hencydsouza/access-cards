@@ -9,7 +9,7 @@ import * as accessCardService from './accessCard.service'
 import { IAccessCardDoc } from './accessCard.interfaces';
 
 export const createAccessCard = catchAsync(async (req: Request, res: Response<IAccessCardDoc>) => {
-    const accessCard = await accessCardService.createAccessCard(req.body);
+    const accessCard = await accessCardService.createAccessCard(req.body, req.scope, req.employee);
     res.status(httpStatus.CREATED).send(accessCard);
 });
 

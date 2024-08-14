@@ -8,7 +8,7 @@ import { Employee } from "../employee";
 import { Company } from "../company";
 import { IEmployeeDoc } from "../employee/employee.interfaces";
 
-export const createAccessCard = async (accessCardBody: NewCreatedAccessCard): Promise<IAccessCardDoc> => {
+export const createAccessCard = async (accessCardBody: NewCreatedAccessCard, scope: string, client: IEmployeeDoc): Promise<IAccessCardDoc> => {
     if (accessCardBody.cardNumber && await AccessCard.findOne({ cardNumber: accessCardBody.cardNumber })) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'AccessCard already exists');
     }
@@ -37,6 +37,13 @@ export const createAccessCard = async (accessCardBody: NewCreatedAccessCard): Pr
         issued_at: accessCardBody.issued_at || new Date(),
         valid_until: accessCardBody.valid_until || null,
         is_active: accessCardBody.is_active || true
+    }
+
+    if (scope === 'company' && client.company.companyId.toString() !== employee.company.companyId.toString()) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Cannot create access card for another company');
+    }
+    if (scope === 'building' && client.company.buildingId.toString() !== employee.company.buildingId.toString()) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Cannot create access card for another building');
     }
 
     const accessCard = await AccessCard.create(accessCardObject);
