@@ -10,6 +10,7 @@ import accessLogRoute from './accessLog.route'
 import configRoute from './config.route'
 import accessRoute from './access.route'
 import authRoute from './auth.route'
+import dashboardRoute from './dashboard.route'
 
 const router = express.Router();
 
@@ -54,6 +55,10 @@ const defaultIRoute: IRoute[] = [
     {
         path: '/auth',
         route: authRoute
+    },
+    {
+        path: '/dashboard',
+        route: dashboardRoute
     }
 ];
 
