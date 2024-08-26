@@ -47,6 +47,12 @@ export const getCompany = catchAsync(async (req: Request, res: Response<ICompany
     }
 });
 
+export const getCompanyNames = catchAsync(async (req: Request, res: Response) => {
+    console.log(req.body)
+    const result = await companyService.getAllCompanyNames()
+    res.json(result)
+})
+
 export const updateCompany = catchAsync(async (req: Request, res: Response<ICompanyDoc | null>) => {
     if (typeof req.params['companyId'] === 'string') {
         const company = await companyService.updateCompanyById(new mongoose.Types.ObjectId(req.params['companyId']), req.body, req.scope, req.employee);

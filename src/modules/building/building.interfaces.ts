@@ -7,6 +7,14 @@ export interface IBuilding {
     // ownerCompany?: mongoose.Types.ObjectId
 }
 
+export interface IBuildingDetails {
+    name: string,
+    address: string,
+    company: {
+        name: string
+    }
+}
+
 export interface IBuildingDoc extends IBuilding, Document { }
 
 export interface IBuildingModel extends Model<IBuildingDoc> {

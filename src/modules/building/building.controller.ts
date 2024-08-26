@@ -6,7 +6,7 @@ import ApiError from '../errors/ApiError';
 import pick from '../utils/pick';
 import { IOptions } from '../paginate/paginate';
 import * as buildingService from './building.service'
-import { IBuildingDoc } from './building.interfaces';
+import { IBuildingDetails, IBuildingDoc } from './building.interfaces';
 
 export const createBuilding = catchAsync(async (req: Request, res: Response<IBuildingDoc>) => {
     if (req.scope == 'company' || req.scope == 'building') {
@@ -26,6 +26,12 @@ export const getBuildings = catchAsync(async (req: Request, res: Response) => {
     res.json(result);
 });
 
+export const getAllBuildings = catchAsync(async (req: Request, res: Response) => {
+    console.log(req.body)
+    const result = await buildingService.getAllBuildings()
+    res.json(result)
+})
+
 export const getBuilding = catchAsync(async (req: Request, res: Response<IBuildingDoc>) => {
     if (typeof req.params['buildingId'] === 'string') {
         if (req.scope == 'company' || req.scope == 'building') {
@@ -38,6 +44,25 @@ export const getBuilding = catchAsync(async (req: Request, res: Response<IBuildi
         res.json(building);
     }
 });
+
+export const getBuildingDetails = catchAsync(async (req: Request, res: Response<IBuildingDetails[]>) => {
+    if (typeof req.params['buildingId'] === 'string') {
+        if (req.scope == 'company' || req.scope == 'building') {
+            throw new ApiError(httpStatus.FORBIDDEN, 'Cannot get building')
+        }
+        const building = await buildingService.getBuildingDetails(new mongoose.Types.ObjectId(req.params['buildingId']));
+        if (!building) {
+            throw new ApiError(httpStatus.NOT_FOUND, 'Building not found');
+        }
+        res.json(building);
+    }
+});
+
+export const getBuildingNames = catchAsync(async (req: Request, res: Response) => {
+    console.log(req.body)
+    const result = await buildingService.getAllBuildingNames()
+    res.json(result)
+})
 
 export const updateBuilding = catchAsync(async (req: Request, res: Response<IBuildingDoc | null>) => {
     if (typeof req.params['buildingId'] === 'string') {

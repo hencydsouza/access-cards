@@ -64,6 +64,18 @@ export const queryCompanies = async (filter: Record<string, any>, options: IOpti
  */
 export const getCompanyById = async (companyId: mongoose.Types.ObjectId): Promise<ICompanyDoc | null> => Company.findById(companyId);
 
+export const getAllCompanyNames = async () => {
+    const result = await Company.aggregate([
+        {
+            '$project': {
+                'name': 1,
+                'ownedBuildings': 1
+            }
+        }
+    ])
+    return result
+}
+
 /**
  * Update company by id
  * @param {mongoose.Types.ObjectId} companyId
@@ -104,22 +116,29 @@ export const updateCompanyById = async (
 
     if (updateBody.ownedBuildings) {
         await Promise.all(updateBody.ownedBuildings.map(async (buildingObj) => {
-            const building = await Building.findOne({ name: buildingObj.buildingName })
+            if (buildingObj.buildingName === "none") {
+                company.ownedBuildings = company.ownedBuildings?.filter((building) => building.buildingId.toString() !== buildingObj.buildingId?.toString()) || []
+                return
+            }
+
+            const building = await Building.findById(new mongoose.Types.ObjectId(buildingObj.buildingId))
             if (!building) {
                 throw new ApiError(httpStatus.NOT_FOUND, 'Building not found')
             }
 
-            // check if building is already owned by a different company
+            // check if building is already owned by a different company and remove it from that company
             const companyWithBuilding = await Company.findOne({ 'ownedBuildings.buildingId': building._id })
             if (companyWithBuilding) {
-                throw new ApiError(httpStatus.BAD_REQUEST, 'Building already owned by another company')
+                companyWithBuilding.ownedBuildings = companyWithBuilding.ownedBuildings?.filter((building) => building.buildingId.toString() !== buildingObj.buildingId?.toString()) || []
+                await companyWithBuilding.save()
             }
 
-            buildingObj.buildingId = building._id
+            company.ownedBuildings?.push({ buildingId: building._id, buildingName: building.name })
         }))
     }
+    delete updateBody.ownedBuildings
 
-    Object.assign(company, updateBody);
+    Object.assign(company, { ...updateBody, ownedBuildings: company.ownedBuildings });
     await company.save();
     return company;
 };

@@ -33,7 +33,7 @@ export type UpdateCompanyBody = Partial<{
     name: string,
     buildingName: string,
     ownedBuildings?: {
-        buildingName: string
+        buildingName?: string
         buildingId?: mongoose.Types.ObjectId
     }[]
 }>

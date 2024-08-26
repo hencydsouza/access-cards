@@ -5,12 +5,16 @@ import authMiddleware from '../../modules/employee_auth/auth.middleware';
 
 const router: Router = express.Router();
 
+router.route('/buildingNames').get(buildingController.getBuildingNames)
+
 router.route('/')
     .post(authMiddleware(['product']), validate(buildingValidation.createBuilding), buildingController.createBuilding)
-    .get(authMiddleware(['product']), validate(buildingValidation.getBuildings), buildingController.getBuildings);
+    // .get(authMiddleware(['product']), validate(buildingValidation.getBuildings), buildingController.getBuildings);
+    .get(authMiddleware(['product']), buildingController.getAllBuildings);
 
 router.route('/:buildingId')
-    .get(authMiddleware(['product']), validate(buildingValidation.getBuilding), buildingController.getBuilding)
+    // .get(authMiddleware(['product']), validate(buildingValidation.getBuilding), buildingController.getBuilding)
+    .get(authMiddleware(['product']), validate(buildingValidation.getBuilding), buildingController.getBuildingDetails)
     .patch(authMiddleware(['product']), validate(buildingValidation.updateBuilding), buildingController.updateBuilding)
     .delete(authMiddleware(['product']), validate(buildingValidation.deleteBuilding), buildingController.deleteBuilding)
 

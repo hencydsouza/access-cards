@@ -1,9 +1,9 @@
 import httpStatus from "http-status";
-import mongoose, { Document } from "mongoose";
+import mongoose, { Aggregate, Document } from "mongoose";
 import Building from "./building.model";
 import { ApiError } from "../errors";
 import { IOptions, QueryResult } from '../paginate/paginate';
-import { IBuildingDoc, NewCreatedBuilding, UpdateBuildingBody } from "./building.interfaces";
+import { IBuildingDetails, IBuildingDoc, NewCreatedBuilding, UpdateBuildingBody } from "./building.interfaces";
 import { Company } from "../company";
 
 /**
@@ -38,12 +38,70 @@ export const queryBuildings = async (filter: Record<string, any>, options: IOpti
     return buildings;
 };
 
+export const getAllBuildings = async (): Promise<IBuildingDoc[] | null> => {
+    const buildings = await Building.aggregate([
+        {
+            '$lookup': {
+                'from': 'companies',
+                'localField': '_id',
+                'foreignField': 'ownedBuildings.buildingId',
+                'as': 'company',
+                'pipeline': [
+                    {
+                        '$project': {
+                            'name': 1
+                        }
+                    }
+                ]
+            }
+        }, {
+            '$project': {
+                '__v': 0
+            }
+        }
+    ])
+    return buildings
+}
+
+export const getAllBuildingNames = async () => {
+    const result = await Building.find().select({ name: 1, _id: 1 })
+    return result
+}
+
 /**
  * Get building by buildingId
  * @param {mongoose.Types.ObjectId} buildingId
  * @returns {Promise<IBuildingDoc | null>}
  */
 export const getBuildingById = async (buildingId: mongoose.Types.ObjectId): Promise<IBuildingDoc | null> => Building.findById(buildingId);
+export const getBuildingDetails = async (buildingId: mongoose.Types.ObjectId): Promise<IBuildingDetails[] | null> => {
+    const result: Aggregate<IBuildingDetails[]> = Building.aggregate<IBuildingDetails>([
+        {
+            '$match': {
+                '_id': new mongoose.Types.ObjectId(buildingId)
+            }
+        }, {
+            '$lookup': {
+                'from': 'companies',
+                'localField': '_id',
+                'foreignField': 'ownedBuildings.buildingId',
+                'as': 'company',
+                'pipeline': [
+                    {
+                        '$project': {
+                            'name': 1
+                        }
+                    }
+                ]
+            }
+        }, {
+            '$project': {
+                '__v': 0
+            }
+        }
+    ])
+    return result
+};
 
 /**
  * Update building by id

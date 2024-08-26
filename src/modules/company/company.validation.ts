@@ -38,7 +38,8 @@ export const updateCompany = {
             name: Joi.string(),
             buildingName: Joi.string(),
             ownedBuildings: Joi.array().items({
-                buildingName: Joi.string()
+                buildingId: Joi.string(),
+                buildingName: Joi.string().optional()
             }).min(1).optional()
         })
         .min(1),
