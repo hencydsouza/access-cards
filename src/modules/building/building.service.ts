@@ -133,6 +133,12 @@ export const updateBuildingById = async (
             })
             await ownerCompany.save()
         }
+
+        // update building name in companies which are within that building
+        await Company.updateMany(
+            { 'buildings.buildingId': building._id },
+            { $set: { 'buildings.buildingName': updateBody.name } }
+        )
     }
 
     // if (updateBody.ownerCompanyName) {
