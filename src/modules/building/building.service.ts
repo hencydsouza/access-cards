@@ -151,6 +151,12 @@ export const deleteBuildingById = async (buildingId: mongoose.Types.ObjectId): P
         throw new ApiError(httpStatus.BAD_REQUEST, 'Building is being used in a company');
     }
 
+    const ownerCompany = await Company.findOne({ "ownedBuildings.buildingName": building.name });
+    if (ownerCompany) {
+        ownerCompany.ownedBuildings = ownerCompany?.ownedBuildings?.filter((item) => item.buildingName !== building.name) || []
+        await ownerCompany?.save()
+    }
+
     await building.deleteOne();
     return building;
 };

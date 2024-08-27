@@ -5,7 +5,7 @@ import authMiddleware from '../../modules/employee_auth/auth.middleware';
 
 const router: Router = express.Router();
 
-router.route('/companyNames').get(companyController.getCompanyNames)
+router.route('/companyNames').get(authMiddleware(['product']), companyController.getCompanyNames)
 
 router.route('/')
     .post(authMiddleware(['product']), validate(companyValidation.createCompany), companyController.createCompany)
