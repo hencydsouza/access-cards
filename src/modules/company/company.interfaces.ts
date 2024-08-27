@@ -22,16 +22,17 @@ export interface ICompanyModel extends Model<ICompanyDoc> {
 
 export type NewCreatedCompany = {
     name: string,
-    buildingName: string,
+    buildingId: string,
     ownedBuildings?: {
-        buildingName: string,
-        buildingId?: mongoose.Types.ObjectId
+        buildingName?: string,
+        buildingId: mongoose.Types.ObjectId
     }[]
 }
 
 export type UpdateCompanyBody = Partial<{
     name: string,
-    buildingName: string,
+    // buildingName: string,
+    buildingId: string,
     ownedBuildings?: {
         buildingName?: string
         buildingId?: mongoose.Types.ObjectId

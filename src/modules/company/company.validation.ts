@@ -5,9 +5,9 @@ import { objectId } from '../validate/custom.validation';
 
 const createCompanyBody: Record<keyof NewCreatedCompany, any> = {
     name: Joi.string().required(),
-    buildingName: Joi.string().required(),
+    buildingId: Joi.string().required(),
     ownedBuildings: Joi.array().items({
-        buildingName: Joi.string()
+        buildingId: Joi.string()
     }).min(1).optional()
 }
 
@@ -36,11 +36,11 @@ export const updateCompany = {
     body: Joi.object()
         .keys({
             name: Joi.string(),
-            buildingName: Joi.string(),
+            buildingId: Joi.string(),
             ownedBuildings: Joi.array().items({
                 buildingId: Joi.string(),
                 buildingName: Joi.string().optional()
-            }).min(1).optional()
+            }).optional()
         })
         .min(1),
 };

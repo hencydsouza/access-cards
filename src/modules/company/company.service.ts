@@ -19,18 +19,26 @@ export const createCompany = async (companyBody: NewCreatedCompany): Promise<ICo
         throw new ApiError(httpStatus.BAD_REQUEST, 'Company already exists');
     }
 
-    const targetBuilding = await Building.findOne({ name: companyBody.buildingName })
+    const targetBuilding = await Building.findById(companyBody.buildingId)
     if (!targetBuilding) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Building not found')
     }
 
     if (companyBody.ownedBuildings) {
         await Promise.all(companyBody.ownedBuildings.map(async (buildingObj) => {
-            const building = await Building.findOne({ name: buildingObj.buildingName })
+            const building = await Building.findById(buildingObj.buildingId)
             if (!building) {
                 throw new ApiError(httpStatus.NOT_FOUND, 'Building not found')
             }
+
+            // check if building is already owned by a different company and remove it from that company
+            const companyWithBuilding = await Company.findOne({ 'ownedBuildings.buildingId': building._id })
+            if (companyWithBuilding) {
+                throw new ApiError(httpStatus.BAD_REQUEST, 'Building is already owned by a different company')
+            }
+
             buildingObj.buildingId = building._id
+            buildingObj.buildingName = building.name
         }))
     }
 
@@ -104,12 +112,12 @@ export const updateCompanyById = async (
         throw new ApiError(httpStatus.BAD_REQUEST, 'Name already taken');
     }
 
-    if (updateBody.buildingName) {
-        const targetBuilding = await Building.findOne({ name: updateBody.buildingName })
+    if (updateBody.buildingId) {
+        const targetBuilding = await Building.findById(updateBody.buildingId)
         if (!targetBuilding) {
             throw new ApiError(httpStatus.NOT_FOUND, 'Building not found')
         }
-        delete updateBody.buildingName
+        delete updateBody.buildingId
 
         Object.assign(updateBody, { buildings: { buildingName: targetBuilding.name, buildingId: targetBuilding._id } })
     }
@@ -128,12 +136,20 @@ export const updateCompanyById = async (
 
             // check if building is already owned by a different company and remove it from that company
             const companyWithBuilding = await Company.findOne({ 'ownedBuildings.buildingId': building._id })
+            // if(companyWithBuilding){
+            //     throw new ApiError(httpStatus.BAD_REQUEST, 'Building is being owned in a company')
+            // }
             if (companyWithBuilding) {
                 companyWithBuilding.ownedBuildings = companyWithBuilding.ownedBuildings?.filter((building) => building.buildingId.toString() !== buildingObj.buildingId?.toString()) || []
                 await companyWithBuilding.save()
             }
 
             company.ownedBuildings?.push({ buildingId: building._id, buildingName: buildingObj.buildingName ? buildingObj.buildingName : building.name })
+
+            if (updateBody.ownedBuildings?.length === 0) {
+                company.ownedBuildings = []
+                console.log('here')
+            }
         }))
     }
     delete updateBody.ownedBuildings
