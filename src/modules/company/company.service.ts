@@ -122,7 +122,7 @@ export const updateCompanyById = async (
         Object.assign(updateBody, { buildings: { buildingName: targetBuilding.name, buildingId: targetBuilding._id } })
     }
 
-    if (updateBody.ownedBuildings) {
+    if (updateBody.ownedBuildings && updateBody.ownedBuildings.length > 0) {
         await Promise.all(updateBody.ownedBuildings.map(async (buildingObj) => {
             if (buildingObj.buildingName === "none") {
                 company.ownedBuildings = company.ownedBuildings?.filter((building) => building.buildingId.toString() !== buildingObj.buildingId?.toString()) || []
@@ -145,13 +145,12 @@ export const updateCompanyById = async (
             }
 
             company.ownedBuildings?.push({ buildingId: building._id, buildingName: buildingObj.buildingName ? buildingObj.buildingName : building.name })
-
-            if (updateBody.ownedBuildings?.length === 0) {
-                company.ownedBuildings = []
-                console.log('here')
-            }
         }))
+    } else {
+        company.ownedBuildings = []
+        // console.log('here')
     }
+
     delete updateBody.ownedBuildings
 
     Object.assign(company, { ...updateBody, ownedBuildings: company.ownedBuildings });
