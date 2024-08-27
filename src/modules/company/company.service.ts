@@ -146,14 +146,14 @@ export const updateCompanyById = async (
 
             company.ownedBuildings?.push({ buildingId: building._id, buildingName: buildingObj.buildingName ? buildingObj.buildingName : building.name })
         }))
-    } else {
+    } else if (updateBody.ownedBuildings && updateBody.ownedBuildings.length == 0) {
         company.ownedBuildings = []
         // console.log('here')
     }
 
-    delete updateBody.ownedBuildings
+    delete updateBody.ownedBuildings;
 
-    Object.assign(company, { ...updateBody, ownedBuildings: company.ownedBuildings });
+    Object.assign(company, updateBody);
     await company.save();
     return company;
 };
