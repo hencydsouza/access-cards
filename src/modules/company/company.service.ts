@@ -133,7 +133,7 @@ export const updateCompanyById = async (
                 await companyWithBuilding.save()
             }
 
-            company.ownedBuildings?.push({ buildingId: building._id, buildingName: building.name })
+            company.ownedBuildings?.push({ buildingId: building._id, buildingName: buildingObj.buildingName ? buildingObj.buildingName : building.name })
         }))
     }
     delete updateBody.ownedBuildings

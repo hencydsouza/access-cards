@@ -122,6 +122,19 @@ export const updateBuildingById = async (
         throw new ApiError(httpStatus.BAD_REQUEST, 'Name already taken');
     }
 
+    // update owner company document with the new name
+    if (updateBody.name) {
+        const ownerCompany = await Company.findOne({ 'ownedBuildings.buildingId': building._id })
+        if (ownerCompany) {
+            ownerCompany.ownedBuildings?.forEach((item) => {
+                if (item.buildingId.toString() === building._id.toString()) {
+                    item.buildingName = updateBody.name || item.buildingName
+                }
+            })
+            await ownerCompany.save()
+        }
+    }
+
     // if (updateBody.ownerCompanyName) {
     //     const ownerCompany = await Company.findOne({ name: updateBody.ownerCompanyName });
     //     if (!ownerCompany) {
