@@ -9,9 +9,9 @@ router.route('/')
     .post(authMiddleware(['building','product']), validate(accessLevelValidation.createAccessLevel), accessLevelController.createAccessLevel)
     .get(authMiddleware(['company', 'building','product']), validate(accessLevelValidation.getAccessLevels), accessLevelController.getAccessLevels);
 
-router.route('/add-permission/:accessLevelId')
-    .patch(authMiddleware(['building','product']), validate(accessLevelValidation.addPermission), accessLevelController.addPermissionToAccessLevel)
-    .delete(authMiddleware(['building','product']), validate(accessLevelValidation.removePermission), accessLevelController.removePermissionFromAccessLevel)
+// router.route('/add-permission/:accessLevelId')
+//     .patch(authMiddleware(['building','product']), validate(accessLevelValidation.addPermission), accessLevelController.addPermissionToAccessLevel)
+//     .delete(authMiddleware(['building','product']), validate(accessLevelValidation.removePermission), accessLevelController.removePermissionFromAccessLevel)
 
 router.route('/:accessLevelId')
     .get(authMiddleware(['company', 'building','product']), validate(accessLevelValidation.getAccessLevel), accessLevelController.getAccessLevel)

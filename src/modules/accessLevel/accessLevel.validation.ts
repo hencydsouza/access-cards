@@ -48,7 +48,6 @@ export const updateAccessLevel = {
                 })
             )
         })
-        .min(1),
 };
 
 export const addPermission = {

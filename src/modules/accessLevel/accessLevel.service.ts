@@ -4,6 +4,7 @@ import AccessLevel from "./accessLevel.model";
 import { ApiError } from "../errors";
 import { IOptions, QueryResult } from '../paginate/paginate';
 import { addPermissionInterface, IAccessLevelDoc, NewCreatedAccessLevel, removePermissionInterface, UpdateAccessLevelBody } from "./accessLevel.interfaces";
+import { Employee } from "../employee";
 
 /**
  * Creates a new access level in the system.
@@ -38,7 +39,7 @@ export const queryAccessLevels = async (filter: Record<string, any>, options: IO
  * @param accessLevelId - The unique identifier of the access level to retrieve.
  * @returns A Promise that resolves to the access level document, or null if not found.
  */
-export const getAccessLevelById = async (accessLevelId: mongoose.Types.ObjectId): Promise<IAccessLevelDoc | null> => AccessLevel.findById(accessLevelId);
+export const getAccessLevelById = async (accessLevelId: mongoose.Types.ObjectId): Promise<IAccessLevelDoc | null> => AccessLevel.findById(accessLevelId, { "permissions._id": 0 });
 
 export const getAccessLevelByName = async (name: string): Promise<IAccessLevelDoc | null> => AccessLevel.findOne({ name });
 
@@ -93,7 +94,11 @@ export const deleteAccessLevelById = async (accessLevelId: mongoose.Types.Object
         throw new ApiError(httpStatus.NOT_FOUND, 'AccessLevel not found');
     }
 
-    // TODO: check if the access level is being used before deleting
+    // Check if the access level is being used before deleting
+    const employeesWithAccessLevel = await Employee.find({ 'accessLevels': { $elemMatch: { "accessLevel": accessLevel.name } } });
+    if (employeesWithAccessLevel.length > 0) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Cannot delete, AccessLevel is being used by employees');
+    }
 
     await accessLevel.deleteOne();
     return accessLevel;
