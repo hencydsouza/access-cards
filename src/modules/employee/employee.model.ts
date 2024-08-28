@@ -51,7 +51,7 @@ const employeeSchema = new mongoose.Schema<IEmployeeDoc, IEmployeeModel>({
     },
     accessLevels: [{
         accessLevel: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
             required: false,
         },
     }],

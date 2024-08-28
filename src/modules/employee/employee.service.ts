@@ -14,11 +14,11 @@ export const createEmployee = async (employeeBody: NewCreatedEmployee, scope: st
         throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
     }
 
-    const targetCompany = await Company.findOne({ name: employeeBody.companyName })
+    const targetCompany = await Company.findById(employeeBody.companyId)
     if (!targetCompany)
         throw new ApiError(httpStatus.NOT_FOUND, 'Company does not exist')
 
-    const targetBuilding = await Building.findOne({ name: employeeBody.buildingName })
+    const targetBuilding = await Building.findById(employeeBody.buildingId)
     if (!targetBuilding) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Building not found')
     }
@@ -48,7 +48,7 @@ export const createEmployee = async (employeeBody: NewCreatedEmployee, scope: st
 
     if (employeeBody.accessLevels) {
         await Promise.all(employeeBody.accessLevels.map(async (accessObject) => {
-            const accessLevelExists = await AccessLevel.findOne({ name: accessObject.accessLevel });
+            const accessLevelExists = await AccessLevel.findById(accessObject.accessLevel);
             if (!accessLevelExists) {
                 throw new ApiError(httpStatus.BAD_REQUEST, 'Access level does not exist');
             }
@@ -88,16 +88,16 @@ export const updateEmployeeById = async (
         throw new ApiError(httpStatus.FORBIDDEN, 'Cannot update employee from another building');
     }
 
-    if (updateBody.companyName) {
-        const targetCompany = await Company.findOne({ name: updateBody.companyName })
+    if (updateBody.companyId) {
+        const targetCompany = await Company.findById(updateBody.companyId)
         if (!targetCompany) {
             throw new ApiError(httpStatus.NOT_FOUND, 'Company does not exist')
         }
         employee.company.companyId = targetCompany._id
     }
 
-    if (updateBody.buildingName) {
-        const targetBuilding = await Building.findOne({ name: updateBody.buildingName })
+    if (updateBody.buildingId) {
+        const targetBuilding = await Building.findById(updateBody.buildingId)
         if (!targetBuilding) {
             throw new ApiError(httpStatus.NOT_FOUND, 'Building not found')
         }
@@ -112,7 +112,7 @@ export const updateEmployeeById = async (
 
     if (updateBody.accessLevels) {
         updateBody.accessLevels.forEach(async (accessObject) => {
-            const accessLevelExists = await AccessLevel.findOne({ name: accessObject.accessLevel });
+            const accessLevelExists = await AccessLevel.findById(accessObject.accessLevel);
             if (!accessLevelExists) {
                 throw new ApiError(httpStatus.BAD_REQUEST, 'Access level does not exist');
             }
@@ -159,7 +159,7 @@ export const refreshPermissions = async (employeeId: mongoose.Types.ObjectId): P
             '$lookup': {
                 'from': 'accesslevels',
                 'localField': 'accessLevels.accessLevel',
-                'foreignField': 'name',
+                'foreignField': '_id',
                 'pipeline': [
                     {
                         '$project': {

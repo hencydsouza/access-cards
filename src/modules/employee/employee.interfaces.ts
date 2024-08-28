@@ -12,7 +12,7 @@ export interface IEmployee {
     },
     accessCardId: mongoose.Types.ObjectId,
     accessLevels: {
-        accessLevel: string
+        accessLevel: mongoose.Types.ObjectId
     }[]
 }
 
@@ -31,8 +31,8 @@ export type NewCreatedEmployee = {
     name: string,
     email: string,
     password?: string
-    companyName: string,
-    buildingName: string,
+    companyId: string,
+    buildingId: string,
     company?: {
         companyId: mongoose.Types.ObjectId,
         buildingId: mongoose.Types.ObjectId

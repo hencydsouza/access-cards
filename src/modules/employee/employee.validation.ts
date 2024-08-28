@@ -6,8 +6,8 @@ const createEmployeeBody: Record<keyof NewCreatedEmployee, any> = {
     name: Joi.string().required(),
     email: Joi.string().email().required(),
     password: Joi.string().optional().custom(password),
-    companyName: Joi.string().required(),
-    buildingName: Joi.string().required(),
+    companyId: Joi.custom(objectId).required(),
+    buildingId: Joi.custom(objectId).required(),
     company: Joi.object({
         companyId: Joi.custom(objectId).required(),
         buildingId: Joi.custom(objectId).required()
@@ -15,7 +15,7 @@ const createEmployeeBody: Record<keyof NewCreatedEmployee, any> = {
     accessCardId: Joi.custom(objectId).optional(),
     accessLevels: Joi.array().items(
         Joi.object({
-            accessLevel: Joi.string().required()
+            accessLevel: Joi.custom(objectId).required()
         })
     )
 }
@@ -47,12 +47,12 @@ export const updateEmployee = {
             name: Joi.string(),
             email: Joi.string().email(),
             password: Joi.string().custom(password),
-            buildingName: Joi.string(),
-            companyName: Joi.string(),
+            buildingId: Joi.custom(objectId),
+            companyId: Joi.custom(objectId),
             accessCardId: Joi.custom(objectId),
             accessLevels: Joi.array().items(
                 Joi.object({
-                    accessLevel: Joi.string().required()
+                    accessLevel: Joi.custom(objectId).required()
                 })
             )
         })
