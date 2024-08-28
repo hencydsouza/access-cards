@@ -186,18 +186,26 @@ export const deleteCompanyById = async (
 
     // TODO: Remove company reference from all employees associated with the company
 
-    const employees = await Employee.find({ "company.companyId": companyId });
-    if (employees.length > 0) {
-        await Employee.updateMany(
-            { "company.companyId": companyId },
-            {
-                $unset: {
-                    'company.companyId': 1,
-                    'company.buildingId': 1
-                }
-            }
-        );
+    // const employees = await Employee.find({ "company.companyId": companyId });
+    // if (employees.length > 0) {
+    //     await Employee.updateMany(
+    //         { "company.companyId": companyId },
+    //         {
+    //             $unset: {
+    //                 'company.companyId': 1,
+    //                 'company.buildingId': 1
+    //             }
+    //         }
+    //     );
+    // }
+
+    // TODO: Delete employees associated with the company
+    try {
+        await Employee.deleteMany({ "company.companyId": companyId.toString() });
+    } catch (error) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Cannot delete company as employees are associated with the company')
     }
+
 
     // TODO: Delete all access cards associated with the company    
 

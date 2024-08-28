@@ -65,7 +65,7 @@ export const queryEmployees = async (filter: Record<string, any>, options: IOpti
     return employees;
 };
 
-export const getEmployeeById = async (employeeId: mongoose.Types.ObjectId): Promise<IEmployeeDoc | null> => Employee.findById(employeeId);
+export const getEmployeeById = async (employeeId: mongoose.Types.ObjectId): Promise<IEmployeeDoc | null> => Employee.findById(employeeId, { "accessLevels._id": 0 });
 
 export const getEmployeeByEmail = async (email: string): Promise<IEmployeeDoc | null> => Employee.findOne({ email });
 
