@@ -5,6 +5,8 @@ import authMiddleware from '../../modules/employee_auth/auth.middleware';
 
 const router: Router = express.Router();
 
+router.route('/accessLevelNames').get(accessLevelController.getAccessLevelNames)
+
 router.route('/')
     .post(authMiddleware(['building','product']), validate(accessLevelValidation.createAccessLevel), accessLevelController.createAccessLevel)
     .get(authMiddleware(['company', 'building','product']), validate(accessLevelValidation.getAccessLevels), accessLevelController.getAccessLevels);

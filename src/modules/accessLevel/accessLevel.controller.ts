@@ -30,6 +30,12 @@ export const getAccessLevel = catchAsync(async (req: Request, res: Response<IAcc
     }
 });
 
+export const getAccessLevelNames = catchAsync(async (req: Request, res: Response) => {
+    console.log(req.body)
+    const result = await accessLevelService.getAllAccessLevelNames()
+    res.json(result)
+})
+
 export const updateAccessLevel = catchAsync(async (req: Request, res: Response<IAccessLevelDoc | null>) => {
     if (typeof req.params['accessLevelId'] === 'string') {
         const accessLevel = await accessLevelService.updateAccessLevelById(new mongoose.Types.ObjectId(req.params['accessLevelId']), req.body);

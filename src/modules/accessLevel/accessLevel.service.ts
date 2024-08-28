@@ -33,6 +33,11 @@ export const queryAccessLevels = async (filter: Record<string, any>, options: IO
     return accessLevels;
 };
 
+export const getAllAccessLevelNames = async () => {
+    const result = await AccessLevel.find().select({ name: 1, _id: 1 })
+    return result
+}
+
 /**
  * Retrieves an access level document by its unique identifier.
  *
