@@ -7,6 +7,7 @@ import { IEmployeeDoc, NewCreatedEmployee, UpdateEmployeeBody } from "./employee
 import { Building } from "../building";
 import { Company } from "../company";
 import { AccessLevel } from "../accessLevel";
+import { AccessCard } from "../accessCard";
 // import { Building } from "../building";
 
 export const createEmployee = async (employeeBody: NewCreatedEmployee, scope: string, client: IEmployeeDoc): Promise<IEmployeeDoc> => {
@@ -65,6 +66,11 @@ export const queryEmployees = async (filter: Record<string, any>, options: IOpti
     return employees;
 };
 
+export const getEmployeeNames = async () => {
+    const result = await Employee.find().select({ name: 1, _id: 1 })
+    return result
+}
+
 export const getEmployeeById = async (employeeId: mongoose.Types.ObjectId): Promise<IEmployeeDoc | null> => Employee.findById(employeeId, { "accessLevels._id": 0 });
 
 export const getEmployeeByEmail = async (email: string): Promise<IEmployeeDoc | null> => Employee.findOne({ email });
@@ -108,7 +114,15 @@ export const updateEmployeeById = async (
         throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
     }
 
-    // TODO: implement access card, access level logic if changed
+    // update access card
+    const accessCard = await AccessCard.findOne({ "cardHolder.employeeId": employee._id })
+    if (accessCard) {
+        if (updateBody.companyId)
+            accessCard.cardHolder.companyId = new mongoose.Types.ObjectId(updateBody.companyId)
+        if (updateBody.buildingId)
+            accessCard.cardHolder.buildingId = new mongoose.Types.ObjectId(updateBody.buildingId)
+        await accessCard.save()
+    }
 
     if (updateBody.accessLevels) {
         updateBody.accessLevels.forEach(async (accessObject) => {

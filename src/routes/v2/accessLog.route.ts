@@ -7,7 +7,7 @@ const router: Router = express.Router();
 
 router.route('/')
     .post(authMiddleware(['company', 'building', 'product']), validate(accessLogValidation.createAccessLog), accessLogController.createAccessLog)
-    .get(authMiddleware(['company', 'building', 'product']), validate(accessLogValidation.getAccessLogs), accessLogController.getAccessLogs);
+    .get(authMiddleware(['company', 'building', 'product']),  accessLogController.getAllAccessLogs);
 
 router.route('/reConfigureAccessLogs/')
     .get(authMiddleware(['product']), accessLogController.reConfigureAccessLogsController)

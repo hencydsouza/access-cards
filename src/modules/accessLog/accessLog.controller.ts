@@ -32,6 +32,15 @@ export const getAccessLog = catchAsync(async (req: Request, res: Response<IAcces
     }
 });
 
+export const getAllAccessLogs = catchAsync(async (req: Request, res: Response) => {
+    const { page, limit } = req.query
+    const result = await accessLogService.getAllAccessLogs(page ? Number(page) : 1, limit ? Number(limit) : 100);
+    if (!result) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'AccessLogs not found');
+    }
+    res.send(result);
+});
+
 export const deleteAccessLog = catchAsync(async (req: Request, res: Response<null>) => {
     if (typeof req.params['accessLogId'] === 'string') {
         await accessLogService.deleteAccessLogById(new mongoose.Types.ObjectId(req.params['accessLogId']));

@@ -78,6 +78,51 @@ export const queryAccessLogs = async (filter: Record<string, any>, options: IOpt
     return accessLogs;
 };
 
+// export const getAccessLogsByCompanyId = async (companyId: mongoose.Types.ObjectId, filter: Record<string, any>, options: IOptions): Promise<QueryResult<Document<IAccessLogDoc>>> => {
+//     const accessLogs = await AccessLog.paginate({ companyId,...filter }, options);
+//     return accessLogs;
+// };
+
+// export const getAccessLogsByBuildingId = async (buildingId: mongoose.Types.ObjectId, filter: Record<string, any>, options: IOptions): Promise<QueryResult<Document<IAccessLogDoc>>> => {
+//     const accessLogs = await AccessLog.paginate({ buildingId,...filter }, options);
+//     return accessLogs;
+// };
+
+export const getAllAccessLogs = async (page: number, limit: number) => {
+    return AccessLog.aggregate([
+        {
+            '$unwind': {
+                'path': '$logs'
+            }
+        }, {
+            '$project': {
+                'createdAt': 0,
+                'udatedAt': 0,
+                '__v': 0
+            }
+        }, {
+            '$project': {
+                'bucketStartTime': 1,
+                'bucketEndTime': 1,
+                'accessCardId': '$logs.accessCardId',
+                'employeeId': '$logs.employeeId',
+                'companyId': '$logs.companyId',
+                'buildingId': '$logs.buildingId',
+                'eventType': '$logs.eventType',
+                'accessType': '$logs.accessType',
+                'resource': '$logs.resource',
+                'timestamp': '$logs.timestamp'
+            }
+        },
+        {
+            '$skip': (page - 1) * limit
+        },
+        {
+            '$limit': limit
+        }
+    ]);
+}
+
 export const getAccessLogById = async (accessLogId: mongoose.Types.ObjectId): Promise<IAccessLogDoc | null> => AccessLog.aggregate([
     { $match: { 'logs._id': accessLogId } },
     { $unwind: '$logs' },

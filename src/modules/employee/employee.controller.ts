@@ -46,6 +46,12 @@ export const getEmployee = catchAsync(async (req: Request, res: Response<IEmploy
     }
 });
 
+export const getEmployeeNames = catchAsync(async (req: Request, res: Response) => {
+    console.log(req.body)
+    const result = await employeeService.getEmployeeNames()
+    res.json(result)
+})
+
 export const updateEmployee = catchAsync(async (req: Request, res: Response<IEmployeeDoc | null>) => {
     if (typeof req.params['employeeId'] === 'string') {
         const employee = await employeeService.updateEmployeeById(new mongoose.Types.ObjectId(req.params['employeeId']), req.body, req.scope, req.employee);

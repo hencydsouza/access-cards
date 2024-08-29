@@ -112,7 +112,7 @@ export const accessService = async (accessBody: IAccess): Promise<string | IAcce
 
             hasRequiredPermission = accessBody.resource.every((reqPermission: string) =>
                 permissionArray[1]?.permissions.some((permission: { resource: string; action: string }) =>
-                    permission.resource === reqPermission && permission.action === 'access'
+                    permission.resource === reqPermission && (permission.action === 'access' || permission.action === 'admin')
                 )
             );
 
