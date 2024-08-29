@@ -41,7 +41,7 @@ export const updateAccessCard = {
                 employeeId: Joi.string().custom(objectId)
             }),
             issued_at: Joi.date(),
-            valid_until: Joi.date(),
+            valid_until: Joi.string(),
             is_active: Joi.boolean()
         })
         .min(1),

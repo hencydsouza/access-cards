@@ -44,7 +44,7 @@ const accessLogSchema = new mongoose.Schema<IAccessLogDoc, IAccessLogModel>({
         },
         accessType: {
             type: String,
-            enum: ['building', 'company'],
+            enum: ['building', 'company', 'product'],
             required: true,
         },
         resource: [{

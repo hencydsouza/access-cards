@@ -25,6 +25,10 @@ export const accessService = async (accessBody: IAccess): Promise<string | IAcce
         throw new ApiError(httpStatus.NOT_FOUND, 'Employee not found');
     }
 
+    if (!(await Company.findOne({ _id: accessBody.companyId, "buildings.buildingId": accessBody.buildingId }))) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Invalid company or building')
+    }
+
     // get employee permissions
     const permissionArray: { type: string, permissions: { resource: string, action: string }[] }[] = [
         {
@@ -33,6 +37,10 @@ export const accessService = async (accessBody: IAccess): Promise<string | IAcce
         },
         {
             type: 'building',
+            permissions: []
+        },
+        {
+            type: 'product',
             permissions: []
         }
     ]
@@ -61,6 +69,8 @@ export const accessService = async (accessBody: IAccess): Promise<string | IAcce
                 permissionArray[0]?.permissions.push(permission)
             } else if (permission.type === 'building') {
                 permissionArray[1]?.permissions.push(permission)
+            } else if(permission.type ==='product'){
+                permissionArray[2]?.permissions.push(permission)
             }
         })
     }
@@ -70,16 +80,17 @@ export const accessService = async (accessBody: IAccess): Promise<string | IAcce
     const employeeCompanyOwnsBuilding = await checkIfEmployeesCompanyOwnsBuilding(employee, accessBody);
     const employeeBelongsToBuilding = employee.company.buildingId.toString() === accessBody.buildingId.toString()
     const employeeBelongsToCompany = employee.company.companyId.toString() === accessBody.companyId.toString()
+    const productAdmin = permissionArray[2]?.permissions.find((item) => item.resource === "product" && item.action === "admin") ? true : false
 
-    let accessType = 0
+    let accessType = 'company'
 
     // Check if the employee belongs to the building or if their company owns the building
-    if (!employeeBelongsToBuilding && !employeeCompanyOwnsBuilding) {
+    if (!employeeBelongsToBuilding && !employeeCompanyOwnsBuilding && !productAdmin) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Employee does not have access to this building');
     }
 
     // Check if the employee belongs to the company
-    if (!employeeBelongsToCompany && !employeeCompanyOwnsBuilding) {
+    if (!employeeBelongsToCompany && !employeeCompanyOwnsBuilding && !productAdmin) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Employee does not belong to this company');
     }
 
@@ -99,7 +110,7 @@ export const accessService = async (accessBody: IAccess): Promise<string | IAcce
             }
 
             console.log('Company permissions:', permissionArray[0])
-            accessType = 0
+            accessType = 'company'
         } else {
             // hasRequiredPermission = true;
             throw new ApiError(httpStatus.BAD_REQUEST, 'Permissions do not match or are missing');
@@ -121,11 +132,14 @@ export const accessService = async (accessBody: IAccess): Promise<string | IAcce
             }
 
             console.log('building permissions:', permissionArray[1])
-            accessType = 1
+            accessType = 'building'
         } else {
             // hasRequiredPermission = true;
             throw new ApiError(httpStatus.BAD_REQUEST, 'Permissions do not match or are missing');
         }
+    } else if (productAdmin) {
+        accessType = 'product'
+        hasRequiredPermission = true
     }
     // else {
     //     // Check if the employee has access to the resource
@@ -144,7 +158,7 @@ export const accessService = async (accessBody: IAccess): Promise<string | IAcce
         accessCardId: accessCard._id,
         buildingId: accessBody.buildingId,
         companyId: accessBody.companyId,
-        accessType: accessType == 0 ? 'company' : 'building',
+        accessType: accessType,
         eventType: accessBody.eventType,
         resource: accessBody.resource,
         timestamp: new Date(),
