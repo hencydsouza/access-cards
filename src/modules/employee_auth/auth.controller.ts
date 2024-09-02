@@ -13,7 +13,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
         refreshToken: tokens.refresh.token,
     }, {
         httpOnly: true,
-        secure: false
+        secure: true
     }).send({ employee, tokens });
     // res.send({ message: `Logged in as ${employee.name}`, employee });
 });
@@ -31,7 +31,7 @@ export const refreshTokens = catchAsync(async (req: Request, res: Response) => {
         refreshToken: userWithTokens.tokens.refresh.token,
     }, {
         httpOnly: true,
-        secure: false
+        secure: true
     }).send({ ...userWithTokens });
 });
 
