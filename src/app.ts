@@ -14,6 +14,7 @@ import { authLimiter } from './modules/utils';
 import { ApiError, errorConverter, errorHandler } from './modules/errors';
 import routesV1 from './routes/v1';
 import routesV2 from './routes/v2'
+import cookieParser from 'cookie-parser';
 
 const app: Express = express();
 
@@ -26,14 +27,16 @@ if (config.env !== 'test') {
 app.use(helmet());
 
 // enable cors
-app.use(cors());
-app.options('*', cors());
+app.use(cors({ credentials: true, origin: true }));
+app.options('*', cors({ credentials: true, origin: true }));
 
 // parse json request body
 app.use(express.json());
 
 // parse urlencoded request body
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser())
 
 // sanitize request data
 app.use(xss());

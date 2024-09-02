@@ -8,18 +8,31 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     const { email, password, resource } = req.body;
     const employee = await authService.loginEmployeeWithEmailAndPassword(email, password, resource);
     const tokens = await tokenService.generateAuthTokens(employee, resource);
-    res.send({ employee, tokens });
+    res.cookie('access_cards', {
+        accessToken: tokens.access.token,
+        refreshToken: tokens.refresh.token,
+    }, {
+        httpOnly: true,
+        secure: false
+    }).send({ employee, tokens });
     // res.send({ message: `Logged in as ${employee.name}`, employee });
 });
 
 export const logout = catchAsync(async (req: Request, res: Response) => {
     await authService.logout(req.body.refreshToken);
+    req.cookies['access_cards'] = null;
     res.status(httpStatus.NO_CONTENT).send();
 });
 
 export const refreshTokens = catchAsync(async (req: Request, res: Response) => {
     const userWithTokens = await authService.refreshAuth(req.body.refreshToken);
-    res.send({ ...userWithTokens });
+    res.cookie('access_cards', {
+        accessToken: userWithTokens.tokens.access.token,
+        refreshToken: userWithTokens.tokens.refresh.token,
+    }, {
+        httpOnly: true,
+        secure: false
+    }).send({ ...userWithTokens });
 });
 
 export const forgotPassword = catchAsync(async (req: Request, res: Response) => {
