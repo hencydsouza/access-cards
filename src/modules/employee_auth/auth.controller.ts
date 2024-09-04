@@ -11,7 +11,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     res.cookie('access_cards', {
         accessToken: tokens.access.token,
         refreshToken: tokens.refresh.token,
-    }).send({ employee, tokens });
+    },{httpOnly: true, secure: true}).send({ employee, tokens });
     // res.send({ message: `Logged in as ${employee.name}`, employee });
 });
 
@@ -26,7 +26,7 @@ export const refreshTokens = catchAsync(async (req: Request, res: Response) => {
     res.cookie('access_cards', {
         accessToken: userWithTokens.tokens.access.token,
         refreshToken: userWithTokens.tokens.refresh.token,
-    }).send({ ...userWithTokens });
+    },{httpOnly: true, secure: true}).send({ ...userWithTokens });
 });
 
 export const forgotPassword = catchAsync(async (req: Request, res: Response) => {
