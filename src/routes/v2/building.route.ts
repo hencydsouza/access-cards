@@ -14,7 +14,7 @@ router.route('/')
 
 router.route('/:buildingId')
     // .get(authMiddleware(['product']), validate(buildingValidation.getBuilding), buildingController.getBuilding)
-    .get(authMiddleware(['product']), validate(buildingValidation.getBuilding), buildingController.getBuildingDetails)
+    .get(authMiddleware(['building', 'product']), validate(buildingValidation.getBuilding), buildingController.getBuildingDetails)
     .patch(authMiddleware(['product']), validate(buildingValidation.updateBuilding), buildingController.updateBuilding)
     .delete(authMiddleware(['product']), validate(buildingValidation.deleteBuilding), buildingController.deleteBuilding)
 

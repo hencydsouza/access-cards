@@ -47,7 +47,7 @@ export const getBuilding = catchAsync(async (req: Request, res: Response<IBuildi
 
 export const getBuildingDetails = catchAsync(async (req: Request, res: Response<IBuildingDetails[]>) => {
     if (typeof req.params['buildingId'] === 'string') {
-        if (req.scope == 'company' || req.scope == 'building') {
+        if (req.scope == 'company') {
             throw new ApiError(httpStatus.FORBIDDEN, 'Cannot get building')
         }
         const building = await buildingService.getBuildingDetails(new mongoose.Types.ObjectId(req.params['buildingId']));

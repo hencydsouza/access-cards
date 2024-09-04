@@ -1,10 +1,12 @@
+import mongoose from "mongoose"
 import { AccessCard } from "../accessCard"
 import { AccessLog } from "../accessLog"
 import { Building } from "../building"
 import { Company } from "../company"
+import { IEmployeeDoc } from "../employee/employee.interfaces"
 // import { IDashboard } from "./dashboard.interfaces"
 
-export const getDashboardData = async () => {
+export const getDashboardData = async (scope: string, employee: IEmployeeDoc) => {
     let result = {
         buildings: 0,
         companies: 0,
@@ -12,7 +14,7 @@ export const getDashboardData = async () => {
         access_logs: {}
     }
 
-    await Promise.all([Building.find().count(), Company.find().count(), AccessCard.aggregate([{
+    const accessCardStage = {
         '$group': {
             '_id': null,
             'total_count': {
@@ -32,12 +34,38 @@ export const getDashboardData = async () => {
                 }
             }
         }
-    }]),
+    }
+
+    await Promise.all([Building.find().count(), scope === "building" ? Company.find({ "buildings.buildingId": employee.company.buildingId }).count() : Company.find().count(), AccessCard.aggregate([
+        {
+            '$match': scope === 'product'
+                ? {}
+                : scope === 'company'
+                    ? {
+                        "cardHolder.companyId": new mongoose.Types.ObjectId(employee.company.companyId)
+                    } : {
+                        "cardHolder.buildingId": new mongoose.Types.ObjectId(employee.company.buildingId)
+                    }
+        },
+        accessCardStage
+    ]),
     AccessLog.aggregate(
         [
             {
                 '$unwind': '$logs'
-            }, {
+            },
+            {
+                '$match': scope === 'product'
+                    ? {}
+                    : scope === 'company'
+                        ? {
+                            "logs.companyId": new mongoose.Types.ObjectId(employee.company.companyId)
+                        }
+                        : {
+                            "logs.buildingId": new mongoose.Types.ObjectId(employee.company.buildingId)
+                        }
+            },
+            {
                 '$group': {
                     '_id': {
                         '$dateToString': {

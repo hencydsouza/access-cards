@@ -123,6 +123,7 @@ export const updateCompanyById = async (
     }
 
     if (updateBody.ownedBuildings && updateBody.ownedBuildings.length > 0) {
+        const ownedBuildingsArray: { buildingId: mongoose.Types.ObjectId, buildingName: string }[] = []
         await Promise.all(updateBody.ownedBuildings.map(async (buildingObj) => {
             if (buildingObj.buildingName === "none") {
                 company.ownedBuildings = company.ownedBuildings?.filter((building) => building.buildingId.toString() !== buildingObj.buildingId?.toString()) || []
@@ -136,19 +137,15 @@ export const updateCompanyById = async (
 
             // check if building is already owned by a different company and remove it from that company
             const companyWithBuilding = await Company.findOne({ 'ownedBuildings.buildingId': building._id })
-            // if(companyWithBuilding){
-            //     throw new ApiError(httpStatus.BAD_REQUEST, 'Building is being owned in a company')
-            // }
-            if (companyWithBuilding) {
+            if (companyWithBuilding && companyWithBuilding._id.toString() !== companyId.toString()) {
                 companyWithBuilding.ownedBuildings = companyWithBuilding.ownedBuildings?.filter((building) => building.buildingId.toString() !== buildingObj.buildingId?.toString()) || []
                 await companyWithBuilding.save()
             }
-
-            company.ownedBuildings?.push({ buildingId: building._id, buildingName: buildingObj.buildingName ? buildingObj.buildingName : building.name })
+            ownedBuildingsArray.push({ buildingId: building._id, buildingName: buildingObj.buildingName || building.name })
         }))
-    } else if (updateBody.ownedBuildings && updateBody.ownedBuildings.length == 0) {
+        company.ownedBuildings = ownedBuildingsArray
+    } else if (updateBody.ownedBuildings && updateBody.ownedBuildings.length === 0) {
         company.ownedBuildings = []
-        // console.log('here')
     }
 
     delete updateBody.ownedBuildings;
